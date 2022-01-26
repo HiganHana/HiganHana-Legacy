@@ -1,2 +1,2 @@
 # HiganHana-prototype
-Using Python 
+Using Discord4J: https://github.com/Discord4J/Discord4J 
