@@ -11,29 +11,28 @@ import importlib
 # add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from bot.conf import BotConfig
+from bot.conf import config
+
+
 
 if __name__ == "__main__":
-    # setup config
-    config = BotConfig(file="config.json")
-
 
     # setup logging
     logging.basicConfig(level=config.log_level, format=config.log_format, filename="bot.log")
-    logging.getLogger("discord").setLevel(logging.INFO)
+    #logging.getLogger("discord").setLevel(logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # setup bot
     intents : discord.Intents = discord.Intents.default()
-    #intents.members = True
+    intents.members = True
+    intents.message_content = True
 
     bot = commands.Bot(
         command_prefix=config.prefix, 
         intents=intents,
-        case_insensitive=True
+        #case_insensitive=True
     )
 
-    bot.__shared_config__ = config
 
     cogs = []
     # get all py files in cogs folder
