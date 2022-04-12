@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from lib.config import Config
+from alib.config import Config
 import logging
 
 class BotConfig(Config):
