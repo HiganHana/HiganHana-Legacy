@@ -1,6 +1,6 @@
 from pprint import pprint
 import unittest
-from lib.config import Config
+from alib.bridge import Config
 
 class t_config(unittest.TestCase):
     def setUp(self) -> None:

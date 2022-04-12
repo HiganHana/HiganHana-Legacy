@@ -15,18 +15,20 @@ from bot.conf import BotConfig
 
 if __name__ == "__main__":
     # setup config
-    config = BotConfig(file="bot/conf.json")
+    config = BotConfig(file="config.json")
+
 
     # setup logging
     logging.basicConfig(level=config.log_level, format=config.log_format, filename="bot.log")
+    logging.getLogger("discord").setLevel(logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     # setup bot
     intents : discord.Intents = discord.Intents.default()
-    intents.members = True
+    #intents.members = True
 
     bot = commands.Bot(
-        command_prefix='!', 
+        command_prefix=config.prefix, 
         intents=intents,
         case_insensitive=True
     )
@@ -44,8 +46,9 @@ if __name__ == "__main__":
 
 
     for cog in cogs:
-        logging.info(f"[bot init] Loading cog {cog}")
+        logging.info(f"[bot init] Loading cog {config.cog_folder}.{cog}")
         bot.load_extension(config.cog_folder+"."+cog)
+
 
     # setup flask
     flask_app = Flask(__name__)
@@ -59,7 +62,7 @@ if __name__ == "__main__":
             module = importlib.import_module(config.blueprints_folder+"."+blueprint_name)
             flask_app.register_blueprint(getattr(module, blueprint_name))
 
-    fthread = Thread(target=flask_app.run, kwargs={"host": config.host, "port": config.port})
+    fthread = Thread(name="flask",target=flask_app.run, kwargs={"host": config.host, "port": config.port})
     fthread.start()
     logging.debug(f"[flask init] Flask thread started")
     logging.debug(f"[bot init] bot token: {config.token}")

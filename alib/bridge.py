@@ -1,7 +1,7 @@
 import json
 from alib.misc import is_jsonable
 
-class Config:
+class Bridge:
     def __init__(self, file=None, skip_if_null : bool = True, save_non_serial : bool = True) -> None:
 
         self._ignoresave = True

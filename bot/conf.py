@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from alib.config import Config
+from alib.bridge import Bridge
 import logging
 
-class BotConfig(Config):
-    prefix = "!"
+class BotConfig(Bridge):
+    prefix = "~"
     case_insensitive = True
     cogs = []
     cog_folder = "bot_cogs"
