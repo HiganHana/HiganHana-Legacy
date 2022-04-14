@@ -1,16 +1,16 @@
 from discord.ext import commands
 from discord.ext.commands import Bot
-from armandaTracker.q_account import ask_in_game_uid
-from bot.conf import config
+from bot_ui import ask_in_game_uid
+from bot.conf import bot_bridge
 
 class tester(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.slash_command(name="hello", guild_ids=config.allowed_servers)
-    async def hello(self, ctx):
+    @commands.slash_command(name="register", guild_ids=bot_bridge.allowed_servers)
+    async def register(self, ctx):
         await ask_in_game_uid(ctx)
-
+        bot_bridge._honkai_tracker.save()
 
 def setup(bot):
     bot.add_cog(tester(bot))

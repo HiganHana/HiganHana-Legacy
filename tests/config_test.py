@@ -1,10 +1,10 @@
 from pprint import pprint
 import unittest
-from alib.bridge import Config
+from alib.bridge import Bridge
 
 class t_config(unittest.TestCase):
     def setUp(self) -> None:
-        self.config = Config()
+        self.config = Bridge()
 
     def test_storage_rule(self):
         self.config.test1 = "test1"
