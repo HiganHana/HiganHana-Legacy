@@ -28,4 +28,7 @@ class BotBridge(Bridge):
     #
     _honkai_tracker : ArmandaTracker = ArmandaTracker("appdata/honkai_members.json" , typ=HonkaiMember)
 
+    # permissions
+    MOD_ROLES = ["Impact Vice Leader", "Impact Leader"]
+
 bot_bridge : BotBridge = BotBridge(file="appdata/config.json")
