@@ -131,6 +131,7 @@ class ArmandaTracker:
             path = self.__backup_path__
 
         with open(path, "w") as f:
+            logging.info(f"{self} saving to {path}")
             json.dump(self.__real_data__, f)
 
     def _get_dict(self, uid : int) -> dict:
@@ -148,8 +149,15 @@ class ArmandaTracker:
         
         self.__real_data__[uid].update(kwargs)
 
-    def get_member(self, uid : int) -> UID_Item:
-        return self.obj.get(str(uid), None)
+    def get_member(self, uid : int = None, **kwargs) -> UID_Item:
+        if uid is not None and uid in self.obj:
+            return self.obj[uid]
+        for item in self.obj.values():
+            if all(getattr(item, k) == v for k, v in kwargs.items()):
+                return item
+
+    def get_members(self, **kwargs) -> typing.List[UID_Item]:
+        return [item for item in self.obj.values() if all(getattr(item, k) == v for k, v in kwargs.items())]
 
     def has_member(self, uid : int) -> bool:
         return uid in self.obj
@@ -168,7 +176,9 @@ class ArmandaTracker:
                 self.obj.pop(uid)
                 if more_than_1:
                     continue
-                break
+                else:
+                    return True
+        return False
 
     def remove_member(self, uid : int) -> UID_Item:
         if uid not in self.obj: 
