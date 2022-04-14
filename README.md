@@ -1,21 +1,32 @@
 # HiganHana-prototype
-Using Pycord, which is Python
 
-# Plan
-Switch current code into Pycord
+## Libraries Used
+py-cord (beta 2.0.#)
+flask
+unittest
 
-Have some starter code/commands in there
+## folder structures
+> alib 
+misc functions, data
 
+> appdata
+stores user data
 
-Cel do webhook and google doc to take users input
+> bot
+primary scripts for bots to function
 
-Setup Notion API for in-armada wiki
+> bot_cogs
+all cogs init using discord cogs
 
-## Priorities
-Basic Commands (Scamcha first command)
+> bot_ui
+visual elements for discord bot
 
-Honkai member/vice command (basic thing, no database yet)
+> build
+exe built from script 
 
-Booster exclusive command
+> honkai
+honkai impact centric logic
+ex: stamina, lv count
 
-Database/Notion Wiki/Profile Robbing
+> tests
+unittests written in library unittest

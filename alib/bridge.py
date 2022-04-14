@@ -2,8 +2,21 @@ import json
 from alib.misc import is_jsonable
 
 class Bridge:
-    def __init__(self, file=None, skip_if_null : bool = True, save_non_serial : bool = True) -> None:
+    """
+    a container class used for inter-module variables storage
 
+    if a variable starts with _, it will not be saved to the file
+
+    """
+
+    def __init__(self, file=None, skip_if_null : bool = True, save_non_serial : bool = True) -> None:
+        """
+        Initialize the bridge
+
+        :param skip_if_null: if True, this will not save none values
+        
+        :param save_non_serial: if True, this will save non-jsonable values
+        """
         self._ignoresave = True
         self._filename = None
         self._config = {}

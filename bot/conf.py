@@ -1,3 +1,9 @@
+"""
+this file contains the global configurations
+
+BotBridge will load the specified json file with dict.update(), overwriting existing keys
+"""
+
 from dataclasses import dataclass
 from alib.bridge import Bridge
 import logging
