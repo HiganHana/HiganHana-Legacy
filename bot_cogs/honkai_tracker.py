@@ -24,6 +24,7 @@ class tester(commands.Cog):
         bot_bridge._honkai_tracker.save()
     
     @commands.slash_command(name="unbind", guild_ids=bot_bridge.allowed_servers)
+    @commands.has_any_role("Impact Vice Leader", "Impact Leader")
     async def unbind(self, ctx, user : discord.User):
         bot_bridge._honkai_tracker.remove_member_by_attr("discord_id", user.id)
         embed = discord.Embed(title="User Unbinded", description="Unbinded {}".format(user.mention))
