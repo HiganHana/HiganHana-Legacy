@@ -80,17 +80,14 @@ class HonkaiMember(UID_Item):
     __keywords__ = ["discord_id", "lv"]
 
 class ArmandaTracker:
-    def __del__(self) -> None:
-        if hasattr(self, "task"):
-            pass
+
 
     def __init__(
         self, 
         source : typing.Union[str, dict],
         typ : type, 
-        periodical_save: bool = False,
         halt_if_not_exist : bool = False,
-        periodical_interval : int = 60,
+        **kwargs
     ) -> None:
         self.__backup_path__ = None
 
@@ -110,7 +107,6 @@ class ArmandaTracker:
                 rawdata = json.load(f)
         elif isinstance(source, dict):
             rawdata = source
-            periodical_save = False
         else:
             raise TypeError(f"source must be str or dict, but got {type(source)}")
 
@@ -125,16 +121,10 @@ class ArmandaTracker:
             item : dict
             self.obj[uid] = typ(uid=int(uid),__tracker__=self, **item)
 
-
-        if periodical_save:
-            raise NotImplementedError("periodical save is not implemented yet")
-            self.periodical_interval = periodical_interval
-
-            
-            self.task = asyncio.run(self._periodical_save())
-            
+        
 
     def save(self, path : str =None) -> None:
+        logging.info(f"{self} entered saving sequence")
         if self.__backup_path__ is None and path is None:
             raise ValueError("no path is given")
         if path is None:
