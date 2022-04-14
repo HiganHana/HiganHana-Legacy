@@ -14,8 +14,8 @@ class cog_debug(commands.Cog):
     @commands.has_guild_permissions(administrator=True)
     async def dump_tracker(self, ctx):
         await ctx.send(f"""```
-        {pformat(bot_bridge._honkai_tracker.__real_data__)}
-    ```""")
+{pformat(bot_bridge._honkai_tracker.__real_data__)}
+```""")
 
 def setup(bot):
     bot.add_cog(cog_debug(bot))
