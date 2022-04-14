@@ -37,10 +37,11 @@ class uid_form(Modal):
         if user_id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
             embed.add_field(name="Error", value="Discord ID already registered")
             return await interaction.response.send_message(embed=embed)
-            
-        logging.info("Registering {} with UID {} and LV {}".format(interaction.user.name, uid, lv))
-        bot_bridge._honkai_tracker.add_member(uid, discord_id=user_id, lv=lv)
 
+        logging.info("Registering {} with UID {} and LV {}".format(interaction.user.name, uid, lv))
+        bot_bridge._honkai_tracker.add_member(uid, discord_id=user_id, lv=int(lv))
+        bot_bridge._honkai_tracker.save()
+        
         embed.add_field(name="uid", value=uid)
         embed.add_field(name="lv", value=lv)
         embed.add_field(name="user", value=interaction.user.mention)
