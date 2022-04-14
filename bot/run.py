@@ -16,7 +16,7 @@ from bot.conf import bot_bridge
 if __name__ == "__main__":
 
     # setup logging
-    logging.basicbot_bridge(level=bot_bridge.log_level, format=bot_bridge.log_format, filename=bot_bridge.log_file)
+    logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, filename=bot_bridge.log_file)
 
     if bot_bridge.log_ignore_discord:
         logging.getLogger("discord").setLevel(logging.INFO)
