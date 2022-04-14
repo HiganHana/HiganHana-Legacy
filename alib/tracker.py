@@ -8,6 +8,10 @@ import typing
 
 
 class OnChangeDict(dict):
+    """
+    dict with changed flag
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.changed = False
@@ -49,6 +53,10 @@ class OnChangeDict(dict):
 
 @dataclass
 class UID_Item:
+    """
+    vars without prefix _ will be directly saved to the referenced ArmandaTracker
+    """
+
     __tracker__ : 'ArmandaTracker'
     __keywords__ = []
     uid : int
@@ -180,6 +188,12 @@ class ArmandaTracker:
         del item
 
     def get_field(self,field : str,  uid : int = None, rtype=dict) -> typing.Any:
+        """
+        if uid provided, return the field of member
+        if uid not provided, return the field of all members
+        if field not found, return None
+        """
+
         if uid is not None and uid not in self.obj:
             return None
         if uid is not None:
@@ -209,6 +223,10 @@ class ArmandaTracker:
         return ret
 
     def get_field_generator(self, field: str):
+        """
+        same as get_field, but return generator
+        """
+
         for item in self.obj.values():
             item : UID_Item
             target =getattr(item, field, None)
