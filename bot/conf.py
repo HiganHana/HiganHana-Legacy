@@ -26,6 +26,6 @@ class BotBridge(Bridge):
     log_file = "bot.log"
 
     #
-    _honkai_tracker : ArmandaTracker = ArmandaTracker("appdata/honkai_members.json")
+    _honkai_tracker : ArmandaTracker = ArmandaTracker("appdata/honkai_members.json" , typ=HonkaiMember)
 
-bot_bridge : BotBridge = BotBridge(file="appdata/config.json", typ=HonkaiMember)
+bot_bridge : BotBridge = BotBridge(file="appdata/config.json")
