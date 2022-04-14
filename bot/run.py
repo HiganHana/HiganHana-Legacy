@@ -50,7 +50,7 @@ if __name__ == "__main__":
         try:
             bot.load_extension(bot_bridge.cog_folder+"."+cog)
         except:
-            logging.exception(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
+            logging.error(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
 
 
     # setup flask
