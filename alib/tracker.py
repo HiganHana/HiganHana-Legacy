@@ -88,6 +88,11 @@ class HonkaiMember(UID_Item):
     __keywords__ = ["discord_id", "lv"]
 
 class ArmandaTracker:
+    """
+    periodical save is not implemented 
+
+    """
+
     def __del__(self) -> None:
         if hasattr(self, "task"):
             pass
