@@ -13,7 +13,12 @@ class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.slash_command(name="register", guild_ids=bot_bridge.allowed_servers)
+    @commands.slash_command(
+        name="register", 
+        guild_ids=bot_bridge.allowed_servers,
+        description="Register your honkai profile",
+        
+    )
     async def register(self, ctx):
         ires : InteractionResponse = ctx.interaction.response
 
@@ -26,7 +31,11 @@ class cog_tracker(commands.Cog):
 
         await ires.send_modal(form)
         
-    @commands.slash_command(name="unbind", guild_ids=bot_bridge.allowed_servers)
+    @commands.slash_command(
+        name="unbind",
+        guild_ids=bot_bridge.allowed_servers,
+        description="Unbind honkai profile (admin, mod)"
+    )
     @commands.has_any_role("Impact Vice Leader", "Impact Leader")
     async def unbind(self, ctx, user : discord.User):
         if bot_bridge._honkai_tracker.remove_member_by_attr("discord_id", user.id):
@@ -36,7 +45,11 @@ class cog_tracker(commands.Cog):
         await ires.send_message(embed=embed)
         
 
-    @commands.slash_command(name="lookup", guild_ids=bot_bridge.allowed_servers)
+    @commands.slash_command(
+        name="lookup", 
+        guild_ids=bot_bridge.allowed_servers,
+        description="Lookup honkai profile"
+    )
     async def lookup(self, ctx : discord.ApplicationContext, user : discord.User = None, uid : int = None):
         ires : InteractionResponse = ctx.interaction.response
         if user is None and uid is None:
@@ -68,7 +81,11 @@ class cog_tracker(commands.Cog):
         
         return await ires.send_message(embed=embed)
 
-    @commands.slash_command(name="update", guild_ids=bot_bridge.allowed_servers)
+    @commands.slash_command(
+        name="update", 
+        guild_ids=bot_bridge.allowed_servers,
+        description="Update honkai profile"
+    )
     async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
