@@ -3,7 +3,7 @@ from discord import Interaction, Button
 from discord.ext import commands
 from discord.ui import View, InputText,Modal
 from honkai import valid_lv, valid_uid
-
+from discord.interactions import InteractionResponse
 from bot.conf import bot_bridge
 class uid_form(Modal):
     def __init__(self):
@@ -51,12 +51,15 @@ async def ask_in_game_uid(ctx : commands.Context):
     """
     Ask for the in-game UID of the member.
     """
+    ires : InteractionResponse = ctx.interaction.response
+
     if ctx.author.id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
         embed = discord.Embed(title="Error", description="You are already registered")
-        await ctx.send(embed=embed)
-        return
+        
+
+        return await ires.send_message(embed=embed)
 
     form = uid_form()
 
-    await ctx.interaction.response.send_modal(form)
-    
+    await ires.send_modal(form)
+    bot_bridge._honkai_tracker.save()

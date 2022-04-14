@@ -10,7 +10,7 @@ class tester(commands.Cog):
     @commands.slash_command(name="register", guild_ids=bot_bridge.allowed_servers)
     async def register(self, ctx):
         await ask_in_game_uid(ctx)
-        bot_bridge._honkai_tracker.save()
+        
 
 def setup(bot):
     bot.add_cog(tester(bot))
