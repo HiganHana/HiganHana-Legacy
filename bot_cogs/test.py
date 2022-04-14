@@ -1,6 +1,6 @@
 from discord.ext import commands
 from discord.ext.commands import Bot
-from bot_ui.reg import ask_in_game_uid
+from bot_ui import ask_in_game_uid
 from bot.conf import bot_bridge
 
 class tester(commands.Cog):
