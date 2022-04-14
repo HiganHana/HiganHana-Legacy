@@ -22,8 +22,6 @@ class uid_form(Modal):
 
         embed = discord.Embed(title="Register Form Feedback")
 
-        
-
         if not valid_lv(lv):
             embed.add_field(name="Error", value="Please enter a valid LV")
             return await interaction.response.send_message(embed=embed)
@@ -46,20 +44,3 @@ class uid_form(Modal):
         embed.add_field(name="user", value=interaction.user.mention)
         await interaction.response.send_message(embed=embed)
 
-
-async def ask_in_game_uid(ctx : commands.Context):
-    """
-    Ask for the in-game UID of the member.
-    """
-    ires : InteractionResponse = ctx.interaction.response
-
-    if ctx.author.id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
-        embed = discord.Embed(title="Error", description="You are already registered")
-        
-
-        return await ires.send_message(embed=embed)
-
-    form = uid_form()
-
-    await ires.send_modal(form)
-    bot_bridge._honkai_tracker.save()
