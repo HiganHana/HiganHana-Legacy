@@ -5,7 +5,7 @@ import discord
 from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
 
-class tester(commands.Cog):
+class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
@@ -33,4 +33,4 @@ class tester(commands.Cog):
         bot_bridge._honkai_tracker.save()
 
 def setup(bot):
-    bot.add_cog(tester(bot))
+    bot.add_cog(cog_tracker(bot))
