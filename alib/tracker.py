@@ -172,6 +172,14 @@ class ArmandaTracker:
         self.obj[uid] = item
         return item
 
+    def remove_member_by_attr(self, attr : str, value : typing.Any, more_than_1 : bool = False) -> None:
+        for uid, item in self.obj.items():
+            if getattr(item, attr) == value:
+                self.obj.pop(uid)
+                if more_than_1:
+                    continue
+                break
+
     def remove_member(self, uid : int) -> UID_Item:
         if uid not in self.obj: 
             return False
