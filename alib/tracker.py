@@ -12,38 +12,41 @@ class OnChangeDict(dict):
     dict with changed flag
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, parent : 'OnChangeDict' = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.changed = False
+        self.__parent__ = parent
 
     def __setitem__(self, key, value):
         if key in self and self[key] == value:
             return
         super().__setitem__(key, value)
-        self.changed = True
+        self.set_changed(True)
     
     def __delitem__(self, key):
         super().__delitem__(key)
-        self.changed = True
+        self.set_changed(True)
     
     def clear(self):
         super().clear()
-        self.changed = True
+        self.set_changed(True)
 
     def pop(self, key, default=None):
         super().pop(key, default)
-        self.changed = True
+        self.set_changed(True)
     
     def popitem(self):
         super().popitem()
-        self.changed = True
+        self.set_changed(True)
     
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
-        self.changed = True
+        self.set_changed(True)
 
     def set_changed(self, changed):
         self.changed = changed
+        if self.__parent__:
+            self.__parent__.set_changed(changed)
 
     def clear_changed(self):
         self.changed = False
@@ -185,8 +188,8 @@ class ArmandaTracker:
         uid = str(uid)
 
         if uid not in self.__real_data__:
-            self.__real_data__[uid] = {}
-        self.__real_data__.changed = True
+            self.__real_data__[uid] = OnChangeDict(parent=self.__real_data__)
+            
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
