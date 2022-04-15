@@ -13,19 +13,6 @@ from honkai import valid_lv
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            return await ctx.send(
-                embed=discord.Embed(
-                    title="Cooldown",
-                    description=f"You are on cooldown for {error.retry_after:.2f} seconds",
-                    color=discord.Color.red()
-                )
-            )
-
-        return await super().on_command_error(ctx, error)
 
 
     @commands.slash_command(
@@ -140,6 +127,12 @@ class cog_tracker(commands.Cog):
 
         return await ires.send_message(embed=embed)
     
+    @updateinfo.error
+    async def update_error(self, ctx, error):
+        #
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(title="Error", description="You are on cooldown", color=0xFF0000)
+            await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(cog_tracker(bot))
