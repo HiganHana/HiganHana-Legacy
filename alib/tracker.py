@@ -12,7 +12,7 @@ class OnChangeDict(dict):
     dict with changed flag
     """
 
-    def __init__(self, parent : 'OnChangeDict' = None, *args, **kwargs):
+    def __init__(self, parent : 'OnChangeDict', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.changed = False
         self.__parent__ = parent
@@ -191,8 +191,7 @@ class ArmandaTracker:
         uid = str(uid)
 
         if uid not in self.__real_data__:
-            self.__real_data__[uid] = OnChangeDict(parent=self.__real_data__)
-            
+            self.__real_data__[uid] = OnChangeDict(self.__real_data__)
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
