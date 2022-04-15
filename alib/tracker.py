@@ -1,5 +1,4 @@
 from abc import abstractmethod
-import asyncio
 from dataclasses import dataclass
 import logging
 import os
@@ -12,51 +11,20 @@ class OnChangeDict(dict):
     dict with changed flag
     """
 
-    def __init__(self, parent : 'OnChangeDict', *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.changed = False
-        self.__parent__ = parent
+        self.hash = self._hash()
 
-    def __setitem__(self, key, value):
-        if key in self and self[key] == value:
-            return
-        if isinstance(value, dict):
-            on = OnChangeDict(self)
-            value = on.update(value)
-        super().__setitem__(key, value)
-        self.set_changed(True)
-    
-    def __delitem__(self, key):
-        super().__delitem__(key)
-        self.set_changed(True)
-    
-    def clear(self):
-        super().clear()
-        self.set_changed(True)
+    def _hash(self):
+        return json.dumps(self, sort_keys=True)
 
-    def pop(self, key, default=None):
-        super().pop(key, default)
-        self.set_changed(True)
-    
-    def popitem(self):
-        super().popitem()
-        self.set_changed(True)
-    
-    def update(self, *args, **kwargs):
-        super().update(*args, **kwargs)
-        self.set_changed(True)
-
-    def set_changed(self, changed):
-        self.changed = changed
-        if self.__parent__:
-            self.__parent__.set_changed(changed)
+    @property
+    def changed(self):
+        return self.hash != self._hash()
 
     def clear_changed(self):
-        self.changed = False
-
-    def is_changed(self):
-        return self.changed
-
+        self.hash = self._hash()
+        
 @dataclass
 class UID_Item:
     """
@@ -116,7 +84,7 @@ class HonkaiMember(UID_Item):
 class ArmandaTracker:
 
     def is_changed(self) -> bool:
-        return self.__real_data__.is_changed()
+        return self.__real_data__.changed
 
     def clear_changed(self) -> None:
         self.__real_data__.clear_changed()
@@ -129,6 +97,7 @@ class ArmandaTracker:
         **kwargs
     ) -> None:
         self.__backup_path__ = None
+        self.__real_data__ = OnChangeDict()
 
         if isinstance(source, str) and not os.path.exists(source):
             if halt_if_not_exist:
@@ -153,7 +122,7 @@ class ArmandaTracker:
         self.ctype = typ
         
         self.obj = {}
-        self.__real_data__ = OnChangeDict()
+        
         
         for uid, item in rawdata.items():
             # item strip uid
