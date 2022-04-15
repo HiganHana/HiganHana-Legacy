@@ -9,26 +9,24 @@ from bot_ui.reg import uid_form
 from discord.utils import get
 from alib.dbot import has_roles
 from honkai import valid_lv
+
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # event
     @commands.Cog.listener()
-    async def on_application_command_error(self, ctx :discord.ApplicationContext, error):
-        # if cooldown
+    async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            return await ctx.respond(embed=discord.Embed(
-                title="Cooldown",
-                description=f"You have to wait {error.retry_after} seconds before using this command again.",
-                color=discord.Color.red()
-            ))
-        # if not allowed
-        if isinstance(error, commands.CommandNotFound):
-            return await ctx.respond(embed=discord.Embed(title="Command not found", description=f"{ctx.prefix}{ctx.invoked_with}", color=0xFF0000))
-        
-        # others
-        raise error
+            return await ctx.send(
+                embed=discord.Embed(
+                    title="Cooldown",
+                    description=f"You are on cooldown for {error.retry_after:.2f} seconds",
+                    color=discord.Color.red()
+                )
+            )
+
+        return await super().on_command_error(ctx, error)
+
 
     @commands.slash_command(
         name="register", 
