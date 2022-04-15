@@ -103,12 +103,19 @@ class cog_tracker(commands.Cog):
         if member is None:
             embed = discord.Embed(title="Error", description="User not registered")
             return await ires.send_message(embed=embed)
-        
-        member.lv = member.lv if not valid_lv(lv) else lv
-        
+
+        member_dict = member.to_dict()
+
+        member.update(
+            lv=(valid_lv, lv),
+        )
 
         bot_bridge._honkai_tracker.save()
         embed = discord.Embed(title="User Updated", description="Updated {}".format(user.mention))
+        
+        for var in member.generate_keywords_var():
+            embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}")
+
         return await ires.send_message(embed=embed)
     
 

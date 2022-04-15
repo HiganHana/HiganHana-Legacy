@@ -81,6 +81,25 @@ class UID_Item:
     def __del__(self) -> None:
         self.__tracker__.__real_data__.pop(self.uid)
 
+    def generate_keywords_var(self):
+        for k in self.__keywords__:
+            yield k,getattr(self, k)
+
+    def update(self, **kargs):
+        for k,v in kargs.items():
+            if isinstance(v, tuple) and len(v) == 2 and callable(v[0]):
+                if(v[0](v[1])):
+                    setattr(self, k, v[1])
+                else:
+                    continue
+            
+            setattr(self, k, v)
+
+    def to_dict(self):
+        return {k:v for k,v in self.generate_keywords_var()}
+    
+
+
 @dataclass
 class HonkaiMember(UID_Item):
     discord_id : int
