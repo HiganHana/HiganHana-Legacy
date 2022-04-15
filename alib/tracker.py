@@ -186,7 +186,7 @@ class ArmandaTracker:
 
         if uid not in self.__real_data__:
             self.__real_data__[uid] = {}
-        
+        self.__real_data__.changed = True
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
