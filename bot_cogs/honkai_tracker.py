@@ -110,8 +110,13 @@ class cog_tracker(commands.Cog):
             lv=(valid_lv, lv),
         )
 
+        if not bot_bridge._honkai_tracker.is_changed():
+            embed = discord.Embed(title="User Update", description="No changes made to {}".format(user.mention))
+            return await ires.send_message(embed=embed)
+
+
         bot_bridge._honkai_tracker.save()
-        embed = discord.Embed(title="User Updated", description="Updated {}".format(user.mention))
+        embed = discord.Embed(title="User Update", description="Updated {}".format(user.mention))
         
         for var in member.generate_keywords_var():
             if(member_dict[var[0]] != var[1]):

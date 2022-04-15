@@ -95,6 +95,7 @@ class UID_Item:
             
             setattr(self, k, v)
 
+
     def to_dict(self):
         return {k:v for k,v in self.generate_keywords_var()}
     
@@ -107,6 +108,12 @@ class HonkaiMember(UID_Item):
     __keywords__ = ["discord_id", "lv"]
 
 class ArmandaTracker:
+
+    def is_changed(self) -> bool:
+        return self.__real_data__.is_changed()
+
+    def clear_changed(self) -> None:
+        self.__real_data__.clear_changed()
 
     def __init__(
         self, 
@@ -156,9 +163,16 @@ class ArmandaTracker:
         if path is None:
             path = self.__backup_path__
 
+        # if no change
+        if not self.is_changed():
+            logging.info(f"{self} no change, skip saving")
+            return
+
         with open(path, "w") as f:
             logging.info(f"{self} saving to {path}")
             json.dump(self.__real_data__, f)
+
+        self.clear_changed()
 
     def _get_dict(self, uid : int) -> dict:
         uid = str(uid)
