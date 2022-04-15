@@ -12,7 +12,20 @@ from honkai import valid_lv
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+    
+
+    async def on_command_error(self, ctx :discord.ApplicationContext, error):
+        # if cooldown
+        if isinstance(error, commands.CommandOnCooldown):
+            return await ctx.send(embed=discord.Embed(
+                title="Cooldown",
+                description=f"You have to wait {error.retry_after} seconds before using this command again.",
+                color=discord.Color.red()
+            ))
+        # if not allowed
+        if isinstance(error, commands.CommandNotFound):
+            return await ctx.send(embed=discord.Embed(title="Command not found", description=f"{ctx.prefix}{ctx.invoked_with}", color=0xFF0000))
+
     @commands.slash_command(
         name="register", 
         guild_ids=bot_bridge.allowed_servers,
@@ -86,6 +99,7 @@ class cog_tracker(commands.Cog):
         guild_ids=bot_bridge.allowed_servers,
         description="Update honkai profile"
     )
+    @commands.cooldown(1, 120, commands.BucketType.user)
     async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
