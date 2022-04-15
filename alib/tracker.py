@@ -12,8 +12,8 @@ class OnChangeDict(dict):
     dict with changed flag
     """
 
-    def __init__(self, parent : 'OnChangeDict' = None):
-        super().__init__()
+    def __init__(self, parent : 'OnChangeDict' = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.changed = False
         self.__parent__ = parent
 
@@ -21,7 +21,8 @@ class OnChangeDict(dict):
         if key in self and self[key] == value:
             return
         if isinstance(value, dict):
-            value = OnChangeDict(self, value)
+            on = OnChangeDict(self)
+            value = on.update(value)
         super().__setitem__(key, value)
         self.set_changed(True)
     
