@@ -114,7 +114,8 @@ class cog_tracker(commands.Cog):
         embed = discord.Embed(title="User Updated", description="Updated {}".format(user.mention))
         
         for var in member.generate_keywords_var():
-            embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}")
+            if(member_dict[var[0]] != var[1]):
+                embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
 
         return await ires.send_message(embed=embed)
     
