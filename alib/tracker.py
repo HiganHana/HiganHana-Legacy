@@ -88,10 +88,10 @@ class UID_Item:
     def update(self, **kargs):
         for k,v in kargs.items():
             if isinstance(v, tuple) and len(v) == 2 and callable(v[0]):
+
                 if(v[0](v[1])):
                     setattr(self, k, v[1])
-                else:
-                    continue
+                continue
             
             setattr(self, k, v)
 
