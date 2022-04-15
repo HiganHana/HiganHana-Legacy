@@ -5,13 +5,19 @@ def valid_uid(uid : str) -> bool:
     """
     Check if the uid is valid.
     """
-    if not uid.isdigit():
+    try:
+        uid_str = str(uid)
+        uid_int = int(uid)
+    except:
         return False
 
-    if len(uid) != 9:
+    if not uid_str.isdigit():
         return False
 
-    if uid[0] != "1":
+    if len(uid_str) != 9:
+        return False
+
+    if uid_str[0] != "1":
         return False
 
     return True
@@ -20,14 +26,14 @@ def valid_lv(lv : str) -> bool:
     """
     Check if the lv is valid.
     """
+    try:
+        int_lv = int(lv)
+    except:
+        return False
+
     if lv is None or lv == "":
         return False
 
-    if not lv.isdigit():
-        return False
-
-    lv = int(lv)
-
-    if MIN_LV <= lv <= MAX_LV:
+    if MIN_LV <= int_lv <= MAX_LV:
         return True
     return False
