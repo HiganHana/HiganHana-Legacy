@@ -154,7 +154,7 @@ class ArmandaTracker:
             item : dict
             self.obj[uid] = typ(uid=int(uid),__tracker__=self, **item)
 
-        
+        self.clear_changed()
 
     def save(self, path : str =None) -> None:
         logging.info(f"{self} entered saving sequence")
