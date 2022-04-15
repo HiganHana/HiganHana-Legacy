@@ -82,14 +82,17 @@ class cog_tracker(commands.Cog):
         embed.add_field(name="lv", value=member.lv)
         
         return await ires.send_message(embed=embed)
-
+    
+    @commands.cooldown(1, 120, commands.BucketType.user)
     @commands.slash_command(
         name="update", 
         guild_ids=bot_bridge.allowed_servers,
         description="Update honkai profile"
     )
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None, **kwargs):
+
+
+
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
             user = ctx.author
@@ -133,6 +136,7 @@ class cog_tracker(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(title="Error", description="You are on cooldown", color=0xFF0000)
             await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(cog_tracker(bot))
