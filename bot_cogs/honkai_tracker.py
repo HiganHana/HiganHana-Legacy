@@ -83,13 +83,14 @@ class cog_tracker(commands.Cog):
         
         return await ires.send_message(embed=embed)
     
+    
+
     @commands.slash_command(
         name="update", 
         guild_ids=bot_bridge.allowed_servers,
         description="Update honkai profile"
     )
     @commands.cooldown(1, 120, commands.BucketType.user)
-
     async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None, **kwargs):
 
         print(kwargs)
