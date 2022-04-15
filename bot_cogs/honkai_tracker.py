@@ -91,10 +91,14 @@ class cog_tracker(commands.Cog):
         description="Update honkai profile"
     )
     @commands.cooldown(1, 120, commands.BucketType.user)
-    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None, **kwargs):
-
-        print(kwargs)
-
+    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+        if ctx.command.is_on_cooldown(ctx):
+            embed = discord.Embed(
+                title="Error", 
+                description="You are on cooldown, please wait {} seconds".format(int(ctx.command.get_cooldown_retry_after(ctx)))
+            )
+            return await ctx.send(embed=embed)
+        
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
             user = ctx.author
@@ -132,12 +136,6 @@ class cog_tracker(commands.Cog):
 
         return await ires.send_message(embed=embed)
     
-    @updateinfo.error
-    async def update_error(self, ctx, error):
-        #
-        if isinstance(error, commands.CommandOnCooldown):
-            embed = discord.Embed(title="Error", description="You are on cooldown", color=0xFF0000)
-            await ctx.send(embed=embed)
 
 
 def setup(bot):
