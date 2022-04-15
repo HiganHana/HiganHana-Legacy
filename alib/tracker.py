@@ -88,22 +88,13 @@ class HonkaiMember(UID_Item):
     __keywords__ = ["discord_id", "lv"]
 
 class ArmandaTracker:
-    """
-    periodical save is not implemented 
-
-    """
-
-    def __del__(self) -> None:
-        if hasattr(self, "task"):
-            pass
 
     def __init__(
         self, 
         source : typing.Union[str, dict],
         typ : type, 
-        periodical_save: bool = False,
         halt_if_not_exist : bool = False,
-        periodical_interval : int = 60,
+        **kwargs
     ) -> None:
         self.__backup_path__ = None
 
@@ -123,7 +114,6 @@ class ArmandaTracker:
                 rawdata = json.load(f)
         elif isinstance(source, dict):
             rawdata = source
-            periodical_save = False
         else:
             raise TypeError(f"source must be str or dict, but got {type(source)}")
 
@@ -138,22 +128,17 @@ class ArmandaTracker:
             item : dict
             self.obj[uid] = typ(uid=int(uid),__tracker__=self, **item)
 
-
-        if periodical_save:
-            raise NotImplementedError("periodical save is not implemented yet")
-            self.periodical_interval = periodical_interval
-
-            
-            self.task = asyncio.run(self._periodical_save())
-            
+        
 
     def save(self, path : str =None) -> None:
+        logging.info(f"{self} entered saving sequence")
         if self.__backup_path__ is None and path is None:
             raise ValueError("no path is given")
         if path is None:
             path = self.__backup_path__
 
         with open(path, "w") as f:
+            logging.info(f"{self} saving to {path}")
             json.dump(self.__real_data__, f)
 
     def _get_dict(self, uid : int) -> dict:
@@ -171,8 +156,15 @@ class ArmandaTracker:
         
         self.__real_data__[uid].update(kwargs)
 
-    def get_member(self, uid : int) -> UID_Item:
-        return self.obj.get(str(uid), None)
+    def get_member(self, uid : int = None, **kwargs) -> UID_Item:
+        if uid is not None and uid in self.obj:
+            return self.obj[uid]
+        for item in self.obj.values():
+            if all(getattr(item, k) == v for k, v in kwargs.items()):
+                return item
+
+    def get_members(self, **kwargs) -> typing.List[UID_Item]:
+        return [item for item in self.obj.values() if all(getattr(item, k) == v for k, v in kwargs.items())]
 
     def has_member(self, uid : int) -> bool:
         return uid in self.obj
@@ -184,6 +176,16 @@ class ArmandaTracker:
         item = self.ctype(uid=uid, __tracker__=self, **kwargs)
         self.obj[uid] = item
         return item
+
+    def remove_member_by_attr(self, attr : str, value : typing.Any, more_than_1 : bool = False) -> None:
+        for uid, item in self.obj.items():
+            if getattr(item, attr) == value:
+                self.obj.pop(uid)
+                if more_than_1:
+                    continue
+                else:
+                    return True
+        return False
 
     def remove_member(self, uid : int) -> UID_Item:
         if uid not in self.obj: 
