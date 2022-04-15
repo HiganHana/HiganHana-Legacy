@@ -13,8 +13,9 @@ class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-
-    async def on_command_error(self, ctx :discord.ApplicationContext, error):
+    # event
+    @commands.Cog.listener()
+    async def on_application_command_error(self, ctx :discord.ApplicationContext, error):
         # if cooldown
         if isinstance(error, commands.CommandOnCooldown):
             return await ctx.respond(embed=discord.Embed(
