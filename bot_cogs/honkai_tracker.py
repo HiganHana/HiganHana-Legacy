@@ -17,14 +17,17 @@ class cog_tracker(commands.Cog):
     async def on_command_error(self, ctx :discord.ApplicationContext, error):
         # if cooldown
         if isinstance(error, commands.CommandOnCooldown):
-            return await ctx.send(embed=discord.Embed(
+            return await ctx.respond(embed=discord.Embed(
                 title="Cooldown",
                 description=f"You have to wait {error.retry_after} seconds before using this command again.",
                 color=discord.Color.red()
             ))
         # if not allowed
         if isinstance(error, commands.CommandNotFound):
-            return await ctx.send(embed=discord.Embed(title="Command not found", description=f"{ctx.prefix}{ctx.invoked_with}", color=0xFF0000))
+            return await ctx.respond(embed=discord.Embed(title="Command not found", description=f"{ctx.prefix}{ctx.invoked_with}", color=0xFF0000))
+        
+        # others
+        raise error
 
     @commands.slash_command(
         name="register", 
