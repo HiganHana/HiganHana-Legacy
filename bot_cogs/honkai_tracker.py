@@ -8,7 +8,7 @@ from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
 from discord.utils import get
 from alib.dbot import has_roles
-
+from honkai import valid_lv
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -104,7 +104,9 @@ class cog_tracker(commands.Cog):
             embed = discord.Embed(title="Error", description="User not registered")
             return await ires.send_message(embed=embed)
         
-        member.lv = member.lv if lv is None else lv
+        member.lv = member.lv if not valid_lv(lv) else lv
+        
+
         bot_bridge._honkai_tracker.save()
         embed = discord.Embed(title="User Updated", description="Updated {}".format(user.mention))
         return await ires.send_message(embed=embed)

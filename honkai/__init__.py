@@ -20,6 +20,9 @@ def valid_lv(lv : str) -> bool:
     """
     Check if the lv is valid.
     """
+    if lv is None or lv == "":
+        return False
+
     if not lv.isdigit():
         return False
 
