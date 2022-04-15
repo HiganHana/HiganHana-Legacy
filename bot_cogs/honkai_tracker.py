@@ -14,7 +14,6 @@ class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.slash_command(
         name="register", 
         guild_ids=bot_bridge.allowed_servers,
@@ -90,14 +89,9 @@ class cog_tracker(commands.Cog):
         guild_ids=bot_bridge.allowed_servers,
         description="Update honkai profile"
     )
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
-        if ctx.command.is_on_cooldown(ctx):
-            embed = discord.Embed(
-                title="Error", 
-                description="You are on cooldown, please wait {} seconds".format(int(ctx.command.get_cooldown_retry_after(ctx)))
-            )
-            return await ctx.send(embed=embed)
+    @commands.cooldown(5,60, commands.BucketType.guild)
+    async def update(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+        
         
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
@@ -128,6 +122,8 @@ class cog_tracker(commands.Cog):
 
 
         bot_bridge._honkai_tracker.save()
+    
+
         embed = discord.Embed(title="User Update", description="Updated {}".format(user.mention))
         
         for var in member.generate_keywords_var():
@@ -135,8 +131,13 @@ class cog_tracker(commands.Cog):
                 embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
 
         return await ires.send_message(embed=embed)
-    
 
+    @update.error
+    async def update_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(title="Error", description="Guild on cooldown")
+            ires : InteractionResponse = ctx.interaction.response
+            await ires.send_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(cog_tracker(bot))
