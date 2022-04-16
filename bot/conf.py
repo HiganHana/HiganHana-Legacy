@@ -5,6 +5,7 @@ BotBridge will load the specified json file with dict.update(), overwriting exis
 """
 
 from dataclasses import dataclass
+import typing
 from alib.bridge import Bridge
 import logging
 
@@ -15,7 +16,7 @@ class BotBridge(Bridge):
     case_insensitive = True
     cogs = []
     cog_folder = "bot_cogs"
-    allowed_servers = [728455513532006491]
+    allowed_servers : typing.List[int]
     token : str
 
     # flask
