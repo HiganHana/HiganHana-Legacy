@@ -160,7 +160,7 @@ class ArmandaTracker:
         uid = str(uid)
 
         if uid not in self.__real_data__:
-            self.__real_data__[uid] = OnChangeDict(self.__real_data__)
+            self.__real_data__[uid] = OnChangeDict()
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
