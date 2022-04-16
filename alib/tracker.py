@@ -53,7 +53,7 @@ class UID_Item:
         return super().__delattr__(name)
 
     def __del__(self) -> None:
-        self.__tracker__.__real_data__.pop(self.uid)
+        self.__tracker__.__real_data__.pop(self.uid, None)
 
     def generate_keywords_var(self):
         for k in self.__keywords__:
