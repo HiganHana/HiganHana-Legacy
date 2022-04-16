@@ -28,3 +28,6 @@ async def multi(self, ctx):
 def the_math() -> int:
     
     return
+
+def setup(bot):
+    return
