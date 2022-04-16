@@ -166,4 +166,6 @@ class new_member(commands.Cog):
         await ctx.respond()
 
 def setup(bot):
+    return
     bot.add_cog(new_member(bot))
+
