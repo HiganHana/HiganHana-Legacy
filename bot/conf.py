@@ -15,7 +15,7 @@ class BotBridge(Bridge):
     case_insensitive = True
     cogs = []
     cog_folder = "bot_cogs"
-    allowed_servers = [773361373794402324, 728455513532006491]
+    allowed_servers = [728455513532006491]
     token : str
 
     # flask
