@@ -69,4 +69,12 @@ if __name__ == "__main__":
     fthread.start()
     logging.debug(f"[flask init] Flask thread started")
     logging.debug(f"[bot init] bot token: {bot_bridge.token}")
-    bot.run(bot_bridge.token)
+
+    # if launched as --test
+    if len(sys.argv) > 1 and sys.argv[1] == "--test":
+        logging.info("[bot init] Launched as test")
+
+        bot.run(bot_bridge.test_token)
+
+    else:
+        bot.run(bot_bridge.token)
