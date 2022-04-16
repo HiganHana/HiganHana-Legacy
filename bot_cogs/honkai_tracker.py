@@ -63,7 +63,7 @@ class cog_tracker(commands.Cog):
                 embed = discord.Embed(title="Error", description="User not registered")
                 return await ires.send_message(embed=embed)
 
-            username = user.name
+            username = user.display_name
         else:
             member : HonkaiMember = bot_bridge._honkai_tracker.get_member(uid=uid)
 
