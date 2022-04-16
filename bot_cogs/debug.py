@@ -8,7 +8,7 @@ from bot_ui.reg import uid_form
 
 class cog_debug(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot : Bot = bot
         
     @commands.command(name="dump_tracker")
     @commands.has_guild_permissions(administrator=True)
@@ -16,6 +16,13 @@ class cog_debug(commands.Cog):
         await ctx.send(f"""```
 {pformat(bot_bridge._honkai_tracker.__real_data__)}
 ```""")
+
+    @commands.command(name="shutdown")
+    @commands.has_guild_permissions(administrator=True)
+    async def shutdown(self, ctx):
+        await ctx.send("Shutting down...")
+        await self.bot.close()
+        exit(0)
 
 def setup(bot):
     bot.add_cog(cog_debug(bot))
