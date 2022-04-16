@@ -1,5 +1,4 @@
 from abc import abstractmethod
-import asyncio
 from dataclasses import dataclass
 import logging
 import os
@@ -14,43 +13,18 @@ class OnChangeDict(dict):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.changed = False
+        self.hash = self._hash()
 
-    def __setitem__(self, key, value):
-        if key in self and self[key] == value:
-            return
-        super().__setitem__(key, value)
-        self.changed = True
-    
-    def __delitem__(self, key):
-        super().__delitem__(key)
-        self.changed = True
-    
-    def clear(self):
-        super().clear()
-        self.changed = True
+    def _hash(self):
+        return json.dumps(self, sort_keys=True)
 
-    def pop(self, key, default=None):
-        super().pop(key, default)
-        self.changed = True
-    
-    def popitem(self):
-        super().popitem()
-        self.changed = True
-    
-    def update(self, *args, **kwargs):
-        super().update(*args, **kwargs)
-        self.changed = True
-
-    def set_changed(self, changed):
-        self.changed = changed
+    @property
+    def changed(self):
+        return self.hash != self._hash()
 
     def clear_changed(self):
-        self.changed = False
-
-    def is_changed(self):
-        return self.changed
-
+        self.hash = self._hash()
+        
 @dataclass
 class UID_Item:
     """
@@ -88,12 +62,13 @@ class UID_Item:
     def update(self, **kargs):
         for k,v in kargs.items():
             if isinstance(v, tuple) and len(v) == 2 and callable(v[0]):
+
                 if(v[0](v[1])):
                     setattr(self, k, v[1])
-                else:
-                    continue
+                continue
             
             setattr(self, k, v)
+
 
     def to_dict(self):
         return {k:v for k,v in self.generate_keywords_var()}
@@ -108,6 +83,12 @@ class HonkaiMember(UID_Item):
 
 class ArmandaTracker:
 
+    def is_changed(self) -> bool:
+        return self.__real_data__.changed
+
+    def clear_changed(self) -> None:
+        self.__real_data__.clear_changed()
+
     def __init__(
         self, 
         source : typing.Union[str, dict],
@@ -116,6 +97,7 @@ class ArmandaTracker:
         **kwargs
     ) -> None:
         self.__backup_path__ = None
+        self.__real_data__ = OnChangeDict()
 
         if isinstance(source, str) and not os.path.exists(source):
             if halt_if_not_exist:
@@ -140,14 +122,14 @@ class ArmandaTracker:
         self.ctype = typ
         
         self.obj = {}
-        self.__real_data__ = OnChangeDict()
+        
         
         for uid, item in rawdata.items():
             # item strip uid
             item : dict
             self.obj[uid] = typ(uid=int(uid),__tracker__=self, **item)
 
-        
+        self.clear_changed()
 
     def save(self, path : str =None) -> None:
         logging.info(f"{self} entered saving sequence")
@@ -156,9 +138,16 @@ class ArmandaTracker:
         if path is None:
             path = self.__backup_path__
 
+        # if no change
+        if not self.is_changed():
+            logging.info(f"{self} no change, skip saving")
+            return
+
         with open(path, "w") as f:
             logging.info(f"{self} saving to {path}")
             json.dump(self.__real_data__, f)
+
+        self.clear_changed()
 
     def _get_dict(self, uid : int) -> dict:
         uid = str(uid)
@@ -171,8 +160,7 @@ class ArmandaTracker:
         uid = str(uid)
 
         if uid not in self.__real_data__:
-            self.__real_data__[uid] = {}
-        
+            self.__real_data__[uid] = OnChangeDict(self.__real_data__)
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:

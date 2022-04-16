@@ -9,10 +9,11 @@ from bot_ui.reg import uid_form
 from discord.utils import get
 from alib.dbot import has_roles
 from honkai import valid_lv
+
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.slash_command(
         name="register", 
         guild_ids=bot_bridge.allowed_servers,
@@ -80,13 +81,18 @@ class cog_tracker(commands.Cog):
         embed.add_field(name="lv", value=member.lv)
         
         return await ires.send_message(embed=embed)
+    
+    
 
     @commands.slash_command(
         name="update", 
         guild_ids=bot_bridge.allowed_servers,
         description="Update honkai profile"
     )
-    async def updateinfo(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+    @commands.cooldown(5,60, commands.BucketType.guild)
+    async def update(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+        
+        
         ires : InteractionResponse = ctx.interaction.response
         if other_user is None:
             user = ctx.author
@@ -110,14 +116,28 @@ class cog_tracker(commands.Cog):
             lv=(valid_lv, lv),
         )
 
+        if not bot_bridge._honkai_tracker.is_changed():
+            embed = discord.Embed(title="User Update", description="No changes made to {}".format(user.mention))
+            return await ires.send_message(embed=embed)
+
+
         bot_bridge._honkai_tracker.save()
-        embed = discord.Embed(title="User Updated", description="Updated {}".format(user.mention))
+    
+
+        embed = discord.Embed(title="User Update", description="Updated {}".format(user.mention))
         
         for var in member.generate_keywords_var():
-            embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}")
+            if(member_dict[var[0]] != var[1]):
+                embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
 
         return await ires.send_message(embed=embed)
-    
+
+    @update.error
+    async def update_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            embed = discord.Embed(title="Error", description="Guild on cooldown")
+            ires : InteractionResponse = ctx.interaction.response
+            await ires.send_message(embed=embed)
 
 def setup(bot):
     bot.add_cog(cog_tracker(bot))
