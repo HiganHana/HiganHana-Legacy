@@ -1,6 +1,6 @@
 import json
 from alib.misc import is_jsonable
-
+import sys
 class Bridge:
     """
     a container class used for inter-module variables storage
@@ -9,7 +9,7 @@ class Bridge:
 
     """
 
-    def __init__(self, file=None, skip_if_null : bool = True, save_non_serial : bool = True) -> None:
+    def __init__(self, file=None, skip_if_null : bool = True, save_non_serial : bool = True, manual_test_mode : bool = False) -> None:
         """
         Initialize the bridge
 
@@ -17,6 +17,16 @@ class Bridge:
         
         :param save_non_serial: if True, this will save non-jsonable values
         """
+        # check test mode
+        # loop sys.argv
+        self._test_mode = False
+        for arg in sys.argv:
+            if "test" in arg:
+                self._test_mode = True
+
+        if manual_test_mode:
+            self._test_mode = True
+
         self._ignoresave = True
         self._filename = None
         self._config = {}
@@ -36,6 +46,9 @@ class Bridge:
         self._ignoresave = False
 
     def __getattr__(self, name: str):
+        if self._test_mode and f"test_{name}" in self._config:
+            return self._config[f"test_{name}"]
+
         if name in self._config:
             return self._config[name]
 
