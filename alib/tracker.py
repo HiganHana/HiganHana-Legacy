@@ -16,7 +16,7 @@ class OnChangeDict(dict):
         self.hash = self._hash()
 
     def _hash(self):
-        return json.dumps(self, sort_keys=True)
+        return hash(json.dumps(self, sort_keys=True))
 
     @property
     def changed(self):
@@ -164,8 +164,12 @@ class ArmandaTracker:
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
-        if uid is not None and uid in self.obj:
+        if uid is not None and str(uid) in self.obj:
             return self.obj[uid]
+
+        if len(kwargs) == 0:
+            return None
+
         for item in self.obj.values():
             if all(getattr(item, k) == v for k, v in kwargs.items()):
                 return item

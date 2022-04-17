@@ -77,5 +77,4 @@ class t_armtra_file(unittest.TestCase):
         self.tracker.save()
         self.tracker.remove_member(uid=1246)
 
-        sleep(5)
         self.tracker.save()
