@@ -26,7 +26,7 @@ class cog_tracker(commands.Cog):
         if ctx.author.id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
             embed = discord.Embed(title="Error", description="You are already registered")
             
-            return await ctx.send(embed=embed)
+            return await ctx.respond(embed=embed)
 
         form = uid_form()
 
@@ -42,7 +42,7 @@ class cog_tracker(commands.Cog):
         if bot_bridge._honkai_tracker.remove_member_by_attr("discord_id", user.id):
             bot_bridge._honkai_tracker.save()
         embed = discord.Embed(title="User Unbinded", description="Unbinded {}".format(user.mention))
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
         
 
     @commands.slash_command(
@@ -59,7 +59,7 @@ class cog_tracker(commands.Cog):
         
             if member is None:
                 embed = discord.Embed(title="Error", description="User not registered")
-                return await ctx.send(embed=embed)
+                return await ctx.respond(embed=embed)
 
             username = user.display_name
         else:
@@ -67,7 +67,7 @@ class cog_tracker(commands.Cog):
 
             if member is None:
                 embed = discord.Embed(title="Error", description="User not found")
-                return await ctx.send(embed=embed)
+                return await ctx.respond(embed=embed)
 
             username = member.uid
             if get(ctx.guild.members, id=member.discord_id) is not None:
@@ -78,7 +78,7 @@ class cog_tracker(commands.Cog):
         embed.add_field(name="uid", value=member.uid)
         embed.add_field(name="lv", value=member.lv)
         
-        return await ctx.send(embed=embed)
+        return await ctx.respond(embed=embed)
     
     
 
@@ -99,13 +99,13 @@ class cog_tracker(commands.Cog):
         # check permissions
         if other_user and not has_roles(ctx, *bot_bridge.MOD_ROLES):
             embed = discord.Embed(title="Error", description="You don't have permission to update other users")
-            return await ctx.send(embed=embed)
+            return await ctx.respond(embed=embed)
 
         # check if user is registered
         member : HonkaiMember = bot_bridge._honkai_tracker.get_member(discord_id=user.id)
         if member is None:
             embed = discord.Embed(title="Error", description="User not registered")
-            return await ctx.send(embed=embed)
+            return await ctx.respond(embed=embed)
 
         member_dict = member.to_dict()
 
@@ -115,7 +115,7 @@ class cog_tracker(commands.Cog):
 
         if not bot_bridge._honkai_tracker.is_changed():
             embed = discord.Embed(title="User Update", description="No changes made to {}".format(user.mention))
-            return await ctx.send(embed=embed)
+            return await ctx.respond(embed=embed)
 
 
         bot_bridge._honkai_tracker.save()
@@ -127,13 +127,13 @@ class cog_tracker(commands.Cog):
             if(member_dict[var[0]] != var[1]):
                 embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
 
-        return await ctx.send(embed=embed)
+        return await ctx.respond(embed=embed)
 
     @update.error
     async def update_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             embed = discord.Embed(title="Error", description="Guild on cooldown")
-            await ctx.send(embed=embed)
+            await ctx.respond(embed=embed)
 
 def setup(bot):
     bot.add_cog(cog_tracker(bot))
