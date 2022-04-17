@@ -164,7 +164,8 @@ class ArmandaTracker:
         self.__real_data__[uid].update(kwargs)
 
     def get_member(self, uid : int = None, **kwargs) -> UID_Item:
-        if uid is not None and str(uid) in self.obj:
+        uid = str(uid)
+        if uid is not None and uid in self.obj:
             return self.obj[uid]
 
         if len(kwargs) == 0:

@@ -71,7 +71,7 @@ class cog_tracker(commands.Cog):
 
             username = member.uid
             if get(ctx.guild.members, id=member.discord_id) is not None:
-                username = get(ctx.guild.members, id=member.discord_id).name
+                username = get(ctx.guild.members, id=member.discord_id).display_name
             
         embed = discord.Embed(title=f"{username} Lookup", description=f"by {ctx.author.mention}")
         
