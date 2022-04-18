@@ -80,7 +80,7 @@ class new_member(commands.Cog):
             value = "#youtube-video and #twitch-strem will be available for anyone to post",
             inline = True
             )
-        await ctx.respond(embed=embed)
+        await ctx.respond(embed = embed)
     
     #Hanabusa Cafe
     @help.command
@@ -115,7 +115,7 @@ class new_member(commands.Cog):
             inline = True
             )
         embed.set_footer(text = "If there\'s many request for a channel, I\' make one")
-        await ctx.respond()
+        await ctx.respond(embed = embed)
         
     #Honkai
     async def honkaiimpact(ctx):
@@ -163,9 +163,8 @@ class new_member(commands.Cog):
             value = "If you need a sensei or cadet, tell us here",
             inline = True
             )
-        await ctx.respond()
+        await ctx.respond(embed = embed)
 
 def setup(bot):
-    return
     bot.add_cog(new_member(bot))
 
