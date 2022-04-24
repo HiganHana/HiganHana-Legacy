@@ -1,16 +1,19 @@
-import re
+from datetime import datetime, tzinfo
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 from bot.conf import bot_bridge
 import random
+from discord.ext import tasks
 
-#Add daily reset I guess
-#Add global pity cuz Cel is an evil bastard and I love it
+GLOBAL_PITY_COUNT = 0
+GLOBAL_PITY_MAX = random.int(50,100000) #Fucking 100,000 for pity, Cel is an evil bastard and I love it
+DAILY_RESET = datetime.time(hour=9, tzinfo="UTC") #9am UTC cuz fuck daylight saving
 
 class gacha(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        daily_reset.start()
         
 gacha = discord.SlashCommandGroup("Gacha", "You fuking addict LMAO")
 
@@ -18,10 +21,16 @@ gacha = discord.SlashCommandGroup("Gacha", "You fuking addict LMAO")
 @gacha.command()
 async def single(self, ctx):
     result = the_math()
+    
+    if global_pity:
+        result = "SS"
+    
     embed = discord.Embed(
         title = "Here's your result you addict",
         value = f"{result}"
     )
+    embed.add_field(title = "Server Pity Count", value = f"{GLOBAL_PITY_COUNT}/{GLOBAL_PITY_MAX}")
+    
     await ctx.respond(embed = embed)
 
 #multi pulls
@@ -33,10 +42,15 @@ async def multi(self, ctx):
     for x in range(10):
         result.append(the_math)
         
+    if global_pity:
+        result[9] = "SS"
+        
     embed = discord.Embed(
         title = "Here's your result you addict",
-        value = result
+        value = f"{result}"
     )
+    embed.add_field(title = "Server Pity Count", value = f"{GLOBAL_PITY_COUNT}/{GLOBAL_PITY_MAX}")
+    
     await ctx.respond(embed = embed)
     
 #Imma rig the living the shit out of this
@@ -53,6 +67,30 @@ def the_math():
         return str("A")
     else:
         return str("Junk")
+
+#time to make everyone piss
+def global_pity(increase : int = 0):
+    
+    if GLOBAL_PITY_COUNT + increase >= GLOBAL_PITY_MAX:
+        GLOBAL_PITY_MAX = random.int(50,100000)
+        return True
+    else:
+        GLOBAL_PITY_COUNT =+ increase
+        return False
+
+#daily reset
+@tasks.loop(time=DAILY_RESET)
+async def daily_reset(self, ctx):
+    GLOBAL_PITY_COUNT = 0
+    GLOBAL_PITY_MAX = random.int(50,100000)
+    channel = self.bot.get_channel(766134112028983326)
+    
+    embed = discord.Embed(
+        title = "Server Gacha Resetted",
+        value = f"The new pity is {GLOBAL_PITY_MAX}, good luck yall!"
+    )
+    await channel.send(embed = embed)
+    
 
 def setup(bot):
     bot.add_cog(gacha(bot))
