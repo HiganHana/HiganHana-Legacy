@@ -70,4 +70,8 @@ if __name__ == "__main__":
     logging.debug(f"[flask init] Flask thread started")
     logging.debug(f"[bot init] bot token: {bot_bridge.token}")
 
-    bot.run(bot_bridge.token)
+    #
+    if bot_bridge.no_bot:
+        fthread.join()
+    else:
+        bot.run(bot_bridge.token)

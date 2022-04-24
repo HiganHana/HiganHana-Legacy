@@ -3,7 +3,7 @@ import discord
 from discord import Interaction, Button
 from discord.ext import commands
 from discord.ui import View, InputText,Modal
-from honkai import valid_lv, valid_uid
+from honkaiDex.game import valid_lv, valid_na_uid
 from discord.interactions import InteractionResponse
 from bot.conf import bot_bridge
 class uid_form(Modal):
@@ -26,7 +26,7 @@ class uid_form(Modal):
         if not valid_lv(lv):
             embed.add_field(name="Error", value="Please enter a valid LV")
             return await interaction.response.send_message(embed=embed)
-        if not valid_uid(uid):
+        if not valid_na_uid(uid):
             embed.add_field(name="Error", value="Please enter a valid UID")
             return await interaction.response.send_message(embed=embed)
 

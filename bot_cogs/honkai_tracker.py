@@ -8,7 +8,7 @@ from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
 from discord.utils import get
 from alib.dbot import has_roles
-from honkai import valid_lv
+from honkaiDex.game import valid_lv
 
 class cog_tracker(commands.Cog):
     def __init__(self, bot):

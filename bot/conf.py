@@ -18,6 +18,7 @@ class BotBridge(Bridge):
     cog_folder = "bot_cogs"
     allowed_servers : typing.List[int]
     token : str
+    no_bot : bool = False
 
     # flask
     host = "0.0.0.0"
