@@ -6,6 +6,7 @@ from discord.ui import View, InputText,Modal
 from honkaiDex.game import valid_lv, valid_na_uid
 from discord.interactions import InteractionResponse
 from bot.conf import bot_bridge
+from zxutil.collections.uitem import ValidationFail
 class uid_form(Modal):
     def __init__(self):
         super().__init__("UID FORM")
@@ -30,20 +31,17 @@ class uid_form(Modal):
             embed.add_field(name="Error", value="Please enter a valid UID")
             return await interaction.response.send_message(embed=embed)
 
-        if bot_bridge._honkai_tracker.has_member(uid):
-            embed.add_field(name="Error", value="Game UID already registered")
+        try:
+            bot_bridge._honkai_tracker.create_item(
+                discord_id=user_id,
+                uid=uid,
+                lv=lv
+            )
+        except ValidationFail as e:
+            e : ValidationFail
+            embed.add_field(name="Error", value=f"{e.problematic_key} is invalid ({e.validation_func.__name__})")
             return await interaction.response.send_message(embed=embed)
 
-        if user_id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
-            embed.add_field(name="Error", value="Discord ID already registered")
-            return await interaction.response.send_message(embed=embed)
-
-        logging.info("Registering {} with UID {} and LV {}".format(interaction.user.name, uid, lv))
-        bot_bridge._honkai_tracker.create_item(
-            discord_id=user_id,
-            uid=uid,
-            lv=lv
-        )
         bot_bridge._honkai_tracker.save()
         
         embed.add_field(name="uid", value=uid)
