@@ -24,5 +24,12 @@ class cog_debug(commands.Cog):
         await self.bot.close()
         exit(0)
 
+    @commands.command(name="list_cogs")
+    @commands.has_guild_permissions(administrator=True)
+    async def list_cogs(self, ctx):
+        await ctx.send(f"""```
+{pformat(self.bot.cogs)}
+```""")
+
 def setup(bot):
     bot.add_cog(cog_debug(bot))
