@@ -8,6 +8,7 @@ class ArmandaMember(UItem):
     lv : int
 
 verfication_model = {
-    "lv": valid_lv
+    "lv": valid_lv,
+    "uid" : int
 }
 

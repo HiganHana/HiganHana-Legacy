@@ -3,4 +3,3 @@ flask
 zw-util-lib
 genshin
 honkaidex
-PIL

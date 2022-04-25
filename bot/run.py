@@ -18,8 +18,8 @@ if __name__ == "__main__":
     # setup logging
     logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, stream=sys.stdout)
 
-    if bot_bridge.log_ignore_discord:
-        logging.getLogger("discord").setLevel(logging.INFO)
+    if not bot_bridge.log_ignore_discord:
+        logging.getLogger("discord").setLevel(logging.DEBUG)
     if bot_bridge.log_to_file:
         logging.getLogger().addHandler(logging.FileHandler(bot_bridge.log_file))
 

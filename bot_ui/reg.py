@@ -35,7 +35,7 @@ class uid_form(Modal):
             bot_bridge._honkai_tracker.create_item(
                 discord_id=user_id,
                 uid=uid,
-                lv=lv
+                lv=int(lv)
             )
         except ValidationFail as e:
             e : ValidationFail

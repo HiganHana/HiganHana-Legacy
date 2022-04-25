@@ -29,6 +29,6 @@ class cog_debug(commands.Cog):
         await ctx.send(f"""```
 {pformat(self.bot.cogs)}
 ```""")
-
+    
 def setup(bot):
     bot.add_cog(cog_debug(bot))

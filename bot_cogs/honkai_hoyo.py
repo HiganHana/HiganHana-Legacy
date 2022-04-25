@@ -17,7 +17,6 @@ from genshin.models.honkai import FullBattlesuit, Stigma
 from honkaiDex import Battlesuit
 import logging
 import os
-logging.getLogger().setLevel(logging.INFO)
 
 class honkai_hoyo(commands.Cog):
     def __init__(self, bot):
@@ -59,7 +58,7 @@ class honkai_hoyo(commands.Cog):
         try:
             results = await self.hoyoclient.get_honkai_battlesuits(user_member.uid)
         except Exception as e:
-            logging.error(e.message)
+            logging.error(e)
 
             embed = discord.Embed(title="Error", description="Failed to get honkai profile")
             embed.add_field(name="log", value=pformat(e))
@@ -92,6 +91,8 @@ class honkai_hoyo(commands.Cog):
             embed = discord.Embed(title="Info", description="User does not have this battlesuit")
             return await ctx.respond(embed=embed)
 
+        await ctx.respond("loading....")
+        
         embed = discord.Embed(
             title=f"{user.display_name}'s {lbs.name} {lbs.rank}",
             description=f"{user.mention}"
@@ -104,16 +105,18 @@ class honkai_hoyo(commands.Cog):
         embed.set_thumbnail(url=lbs.icon)
         download_image_from_url(lbs.weapon.icon, f"{lbs.weapon.name}_{lbs.weapon.id}")
         stig_file_names = {f"{k.name}_{k.id}" : k.icon for k in lbs.stigmata if k is not None}
-
+        
+        
         batch_download(**stig_file_names)
 
         combined, save_path = combine_image(f"{lbs.weapon.name}_{lbs.weapon.id}", *stig_file_names.keys())
         if save_path is None:
             embed.add_field(name="Error", value="Failed to load images")
-
+            return await ctx.respond(embed=embed)
+        logging.debug(save_path)
         file = discord.File(save_path, filename="image.png")
         embed.set_image(url="attachment://image.png")
-        await ctx.respond(embed=embed, file=file)
+        await ctx.channel.send(embed=embed, file=file)
 
         #send
 
