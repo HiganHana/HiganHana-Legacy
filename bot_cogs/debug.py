@@ -5,7 +5,7 @@ from bot.conf import bot_bridge
 import discord
 from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
-
+from honkaiDex import HonkaiDex
 class cog_debug(commands.Cog):
     def __init__(self, bot):
         self.bot : Bot = bot
@@ -14,7 +14,7 @@ class cog_debug(commands.Cog):
     @commands.has_guild_permissions(administrator=True)
     async def dump_tracker(self, ctx):
         await ctx.send(f"""```
-{pformat(bot_bridge._honkai_tracker.__real_data__)}
+{pformat(bot_bridge._honkai_tracker._data)}
 ```""")
 
     @commands.command(name="shutdown")
