@@ -45,7 +45,7 @@ class cog_tracker(commands.Cog):
             embed = discord.Embed(title="Error", description="You are not registered")
             return await ctx.respond(embed=embed)
         
-        del member
+        bot_bridge._honkai_tracker.remove(member)
         bot_bridge._honkai_tracker.save()
         embed = discord.Embed(title="User Unbinded", description="Unbinded {}".format(user.mention))
         await ctx.respond(embed=embed)

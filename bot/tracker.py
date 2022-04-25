@@ -6,6 +6,7 @@ class ArmandaMember(UItem):
     discord_id : PrimaryJsonKey
     uid : UniqueKey
     lv : int
+    genshin_id : UniqueKey = None
 
 verfication_model = {
     "lv": valid_lv,
