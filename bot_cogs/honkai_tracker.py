@@ -111,7 +111,6 @@ class cog_tracker(commands.Cog):
             embed = discord.Embed(title="Error", description="User not registered")
             return await ctx.respond(embed=embed)
 
-        member_dict = member.to_dict()
         try:
             member.update(
                 lv=lv,
@@ -124,13 +123,7 @@ class cog_tracker(commands.Cog):
         bot_bridge._honkai_tracker.save()
     
 
-        embed = discord.Embed(title="User Update", description="Updated {}".format(user.mention))
-        
-        for var in member.field_keys:
-            if(member_dict[var[0]] != var[1]):
-                embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
-
-        return await ctx.respond(embed=embed)
+        await ctx.invoke(self.lookup, user=user)
 
     @update.error
     async def update_error(self, ctx, error):
