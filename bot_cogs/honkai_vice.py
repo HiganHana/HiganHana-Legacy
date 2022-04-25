@@ -4,7 +4,7 @@ from discord.ext.commands import Bot
 from bot.conf import bot_bridge
 from discord.interactions import InteractionResponse
 
-class honkai_vice(commands.cogs):
+class honkai_vice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         

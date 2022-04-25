@@ -12,6 +12,8 @@ import logging
 from zxutil.collections.uitem import UTracker
 from bot.tracker import ArmandaMember, verfication_model
 
+import honkaiDex.profile.cached
+
 class BotBridge(Bridge):
     prefix = "!"
     case_insensitive = True
@@ -30,8 +32,8 @@ class BotBridge(Bridge):
     log_level = logging.DEBUG
     log_format = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
     
-    log_ignore_discord = False
-    log_sysout = True
+    log_ignore_discord = True
+    log_to_file = False
     log_file = "bot.log"
 
     #
@@ -43,5 +45,9 @@ class BotBridge(Bridge):
 
     # permissions
     MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin"]
+
+    # hoyo
+    ltuid : int
+    ltoken : str
 
 bot_bridge : BotBridge = BotBridge(file="appdata/config.json")

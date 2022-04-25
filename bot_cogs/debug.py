@@ -5,7 +5,6 @@ from bot.conf import bot_bridge
 import discord
 from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
-from honkaiDex import HonkaiDex
 class cog_debug(commands.Cog):
     def __init__(self, bot):
         self.bot : Bot = bot

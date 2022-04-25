@@ -95,8 +95,6 @@ class cog_tracker(commands.Cog):
     )
     @commands.cooldown(5,60, commands.BucketType.guild)
     async def update(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
-        
-        
         if other_user is None:
             user = ctx.author
         else:
