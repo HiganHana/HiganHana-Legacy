@@ -10,7 +10,7 @@ gachagroup : discord.SlashCommandGroup = discord.SlashCommandGroup("gacha", "Gac
 # 8 am utc
 RESET_TIME = time(8, 0, 0)
 
-class gacha(commands.Cog):
+class gacha_cog(commands.Cog):
     def __init__(self, bot):
         self.GLOBAL_PITY_COUNT = 0
         self.GLOBAL_PITY_MAX =random.randint(50,100000) #Fucking 100,000 for pity, Cel is an evil bastard and I love it
@@ -96,4 +96,4 @@ class gacha(commands.Cog):
     
 
 def setup(bot : discord.Bot):
-    bot.add_cog(gacha(bot))
+    bot.add_cog(gacha_cog(bot))

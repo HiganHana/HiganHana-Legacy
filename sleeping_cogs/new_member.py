@@ -1,17 +1,16 @@
 from turtle import title
 import discord
 from discord.ext import commands
-from discord.ext.commands import Bot
-from bot_ui.reg import ask_in_game_uid
+from discord.bot import Bot
 from bot.conf import bot_bridge
-
+help = discord.SlashCommandGroup(name="help", description="Help you get familiar with this server")
 class new_member(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
        
         
     #Fresh people join this discord TODO add embed and infomation,
-    @commands.slash_command(name="yahallo", guild_ids=bot_bridge.allowed_servers)
+    @commands.slash_command(name="yahallo")
     async def new_member(self, ctx):
         #Create embed
         embed = discord.Embed(
@@ -41,7 +40,7 @@ class new_member(commands.Cog):
         
         
     #create a help command to guide people
-    help = discord.SlashCommandGroup("help", "Help you get familiar with this server")
+    
     
     #Overall
     @help.command

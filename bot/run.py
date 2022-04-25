@@ -16,12 +16,12 @@ from bot.conf import bot_bridge
 if __name__ == "__main__":
 
     # setup logging
-    logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, filename=bot_bridge.log_file)
+    logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, stream=sys.stdout)
 
     if bot_bridge.log_ignore_discord:
         logging.getLogger("discord").setLevel(logging.INFO)
-    if bot_bridge.log_sysout:
-        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    if bot_bridge.log_to_file:
+        logging.getLogger().addHandler(logging.FileHandler(bot_bridge.log_file))
 
     # setup bot
     intents : discord.Intents = discord.Intents.default()
