@@ -1,7 +1,7 @@
 
 from discord.ext import commands
 from discord.ext.commands import Bot
-from alib.tracker import HonkaiMember
+from bot.tracker import ArmandaMember
 from bot.conf import bot_bridge
 import discord
 from discord.interactions import InteractionResponse
@@ -9,6 +9,7 @@ from bot_ui.reg import uid_form
 from discord.utils import get
 from bot import has_roles
 from honkaiDex.game import valid_lv
+from zxutil.collections.uitem import ValidationFail
 
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
@@ -23,7 +24,7 @@ class cog_tracker(commands.Cog):
     async def register(self, ctx):
         ires : InteractionResponse = ctx.interaction.response
 
-        if ctx.author.id in bot_bridge._honkai_tracker.get_field_generator("discord_id"):
+        if ctx.author.id in bot_bridge._honkai_tracker.yield_field("discord_id"):
             embed = discord.Embed(title="Error", description="You are already registered")
             
             return await ctx.respond(embed=embed)
@@ -39,8 +40,13 @@ class cog_tracker(commands.Cog):
     )
     @commands.has_any_role("Impact Vice Leader", "Impact Leader")
     async def unbind(self, ctx, user : discord.User):
-        if bot_bridge._honkai_tracker.remove_member_by_attr("discord_id", user.id):
-            bot_bridge._honkai_tracker.save()
+        member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
+        if member is None:
+            embed = discord.Embed(title="Error", description="You are not registered")
+            return await ctx.respond(embed=embed)
+        
+        del member
+        bot_bridge._honkai_tracker.save()
         embed = discord.Embed(title="User Unbinded", description="Unbinded {}".format(user.mention))
         await ctx.respond(embed=embed)
         
@@ -55,7 +61,7 @@ class cog_tracker(commands.Cog):
             user = ctx.author
         
         if user is not None:
-            member : HonkaiMember = bot_bridge._honkai_tracker.get_member(discord_id=user.id)
+            member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
         
             if member is None:
                 embed = discord.Embed(title="Error", description="User not registered")
@@ -63,7 +69,7 @@ class cog_tracker(commands.Cog):
 
             username = user.display_name
         else:
-            member : HonkaiMember = bot_bridge._honkai_tracker.get_member(uid=uid)
+            member : ArmandaMember = bot_bridge._honkai_tracker.get_one(uid=uid)
 
             if member is None:
                 embed = discord.Embed(title="Error", description="User not found")
@@ -102,28 +108,27 @@ class cog_tracker(commands.Cog):
             return await ctx.respond(embed=embed)
 
         # check if user is registered
-        member : HonkaiMember = bot_bridge._honkai_tracker.get_member(discord_id=user.id)
+        member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
         if member is None:
             embed = discord.Embed(title="Error", description="User not registered")
             return await ctx.respond(embed=embed)
 
         member_dict = member.to_dict()
-
-        member.update(
-            lv=(valid_lv, lv),
-        )
-
-        if not bot_bridge._honkai_tracker.is_changed():
-            embed = discord.Embed(title="User Update", description="No changes made to {}".format(user.mention))
+        try:
+            member.update(
+                lv=lv,
+            )
+        except ValidationFail as e:
+            e : ValidationFail
+            embed = discord.Embed(title="Error", description=f"{e.problematic_key} key is invalid ({e.validation_func.__name__})")
             return await ctx.respond(embed=embed)
-
 
         bot_bridge._honkai_tracker.save()
     
 
         embed = discord.Embed(title="User Update", description="Updated {}".format(user.mention))
         
-        for var in member.generate_keywords_var():
+        for var in member.field_keys:
             if(member_dict[var[0]] != var[1]):
                 embed.add_field(name=var[0], value=f"{member_dict[var[0]]} -> {var[1]}", inline=False)
 
