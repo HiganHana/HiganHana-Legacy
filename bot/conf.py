@@ -44,7 +44,7 @@ class BotBridge(Bridge):
     )
 
     # permissions
-    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin"]
+    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
 
     # hoyo
     ltuid : int

@@ -1,5 +1,3 @@
-
-from email.mime import image
 import json
 import logging
 from pprint import pformat, pprint
@@ -32,7 +30,7 @@ class honkai_hoyo(commands.Cog):
 
     @commands.slash_command(name="hoyo_valk", description="Get hoyolab character")
     @commands.cooldown(1, 5, commands.BucketType.guild)
-    @commands.has_any_role("Impact Vice Leader", "Impact Leader", "admin")
+    @commands.has_any_role(*bot_bridge.MOD_ROLES)
     async def hoyop(self, ctx : discord.ApplicationContext, user : discord.User, battlesuit_name : str):
         battlesuit_name = battlesuit_name.lower().strip()
         # check valid battlesuit

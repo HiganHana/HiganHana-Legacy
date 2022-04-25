@@ -2,3 +2,5 @@ py-cord==2.0.0b7
 flask
 zw-util-lib
 genshin
+honkaidex
+PIL
