@@ -49,7 +49,11 @@ if __name__ == "__main__":
         logging.info(f"[bot init] Loading cog {bot_bridge.cog_folder}.{cog}")
         try:
             bot.load_extension(bot_bridge.cog_folder+"."+cog)
-        except:
+        except Exception as e:
+            # stacktrace
+            import traceback
+            traceback.print_exc()
+            logging.error(e)
             logging.error(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
 
 
