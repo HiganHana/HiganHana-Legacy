@@ -37,7 +37,13 @@ class cog_debug(commands.Cog):
     
     @commands.command(name="eval")
     @commands.has_any_role("Bot Dev")
-    async def eval_code(self, ctx, code:str):
+    async def eval_code(self, ctx, *code):
+        
+        line = ""
+        for c in code:
+            line = line + c + " "
+        
+        code = str(line).strip()
         embed = discord.Embed(title="Eval Result", description=f"input:```{code}```")
         try:
             result = eval(code)

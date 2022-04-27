@@ -33,7 +33,7 @@ if __name__ == "__main__":
         intents=intents,
         case_insensitive=bot_bridge.case_insensitive
     )
-
+    bot_bridge._bot = bot
 
     cogs = []
     # get all py files in cogs folder
