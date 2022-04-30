@@ -1,81 +1,36 @@
-import os
-from pprint import pprint
-import discord
-from discord.ext import commands
 import logging
+import os
 import sys
-from flask import Flask
-from threading import Thread
-import importlib
+
 
 # add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from bot.conf import bot_bridge
+from bot.conf import bot_bridge, ArmandaMember
+from bot.init import run_bot_and_flask
+from zxutil.folderCacher import FolderCacher
+from bot.funcs import download_img
+
+def pulled_save_image(raw, file_path : str, link : str):
+    img = download_img(link)
+    logging.info(f"Saving image {link} to {file_path}")
+    if img is None:
+        logging.debug(f"Failed to download image {link}")
+    img.save(file_path, "PNG")
+    return img
+
+
 
 if __name__ == "__main__":
+    # IMPORT HONKAIDEX  
+    import honkaiDex.profile.cached
+    
+    # establish cacher
+    bot_bridge._pulled_cacher = FolderCacher.make_webimg_cache("cache/pulled_images/", extension="png")
+    bot_bridge._merged_cacher = FolderCacher.make_webimg_cache("cache/merged_images/", extension="png")
 
-    # setup logging
-    logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, stream=sys.stdout)
+    bot_bridge._pulled_cacher.file_save_method =pulled_save_image 
 
-    if not bot_bridge.log_ignore_discord:
-        logging.getLogger("discord").setLevel(logging.DEBUG)
-    if bot_bridge.log_to_file:
-        logging.getLogger().addHandler(logging.FileHandler(bot_bridge.log_file))
+    ArmandaMember.from_dict(bot_bridge.ARMANDA_JSON)
 
-    # setup bot
-    intents : discord.Intents = discord.Intents.default()
-    intents.members = True
-    intents.message_content = True
-
-    bot = commands.Bot(
-        command_prefix=bot_bridge.prefix, 
-        intents=intents,
-        case_insensitive=bot_bridge.case_insensitive
-    )
-
-
-    cogs = []
-    # get all py files in cogs folder
-    for file in os.listdir(bot_bridge.cog_folder):
-        if file.endswith(".py"):
-            # get the name of the file without the .py extension
-            cog_name = file[:-3]
-            # add the cog to the list
-            cogs.append(cog_name)
-
-
-    for cog in cogs:
-        logging.info(f"[bot init] Loading cog {bot_bridge.cog_folder}.{cog}")
-        try:
-            bot.load_extension(bot_bridge.cog_folder+"."+cog)
-        except Exception as e:
-            # stacktrace
-            import traceback
-            traceback.print_exc()
-            logging.error(e)
-            logging.error(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
-
-
-    # setup flask
-    flask_app = Flask(__name__)
-    # load blueprints dynamically
-    for file in os.listdir(bot_bridge.blueprints_folder):
-        if file.endswith(".py"):
-            # get the name of the file without the .py extension
-            blueprint_name = file[:-3]
-            # add the blueprint to the list
-            logging.info(f"[flask init] Loading blueprint {blueprint_name}")
-            module = importlib.import_module(bot_bridge.blueprints_folder+"."+blueprint_name)
-            flask_app.register_blueprint(getattr(module, blueprint_name))
-
-    fthread = Thread(name="flask",target=flask_app.run, kwargs={"host": bot_bridge.host, "port": bot_bridge.port})
-    fthread.start()
-    logging.debug(f"[flask init] Flask thread started")
-    logging.debug(f"[bot init] bot token: {bot_bridge.token}")
-
-    #
-    if bot_bridge.no_bot:
-        fthread.join()
-    else:
-        bot.run(bot_bridge.token)
+    run_bot_and_flask()
