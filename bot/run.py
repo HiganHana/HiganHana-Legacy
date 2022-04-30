@@ -11,16 +11,6 @@ from bot.init import run_bot_and_flask
 from zxutil.folderCacher import FolderCacher
 from bot.funcs import download_img
 
-def pulled_save_image(raw, file_path : str, link : str):
-    img = download_img(link)
-    logging.info(f"Saving image {link} to {file_path}")
-    if img is None:
-        logging.debug(f"Failed to download image {link}")
-    img.save(file_path, "PNG")
-    return img
-
-
-
 if __name__ == "__main__":
     # IMPORT HONKAIDEX  
     import honkaiDex.profile.cached
