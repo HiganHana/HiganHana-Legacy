@@ -1,6 +1,5 @@
 from contextlib import redirect_stdout
 from pprint import pformat
-import sys
 from discord.ext import commands
 from discord.ext.commands import Bot
 from bot.conf import bot_bridge
