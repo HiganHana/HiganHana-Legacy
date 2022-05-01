@@ -11,6 +11,7 @@ from zxutil.bridge import Bridge
 from zxutil.umodel import UItem, UniqueKey, UPrimaryKey
 from zxutil.folderCacher import FolderCacher
 from honkaiDex.game import valid_lv, valid_na_uid
+import genshin
 
 class BotBridge(Bridge):
     prefix = "!"
@@ -50,6 +51,8 @@ class BotBridge(Bridge):
     _pulled_cacher : FolderCacher
     _merged_cacher : FolderCacher
 
+    #
+    _hoyoclient : genshin.Client
 
 def valid_genshin_id(value):
     str_val = str(value)

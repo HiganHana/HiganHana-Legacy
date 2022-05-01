@@ -31,11 +31,8 @@ import random
 class honkai_hoyo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        cookies = {
-            "ltuid" : bot_bridge.ltuid,
-            "ltoken" : bot_bridge.ltoken,
-        }
-        self.hoyoclient = Client(cookies=cookies)
+        
+        self.hoyoclient : Client = bot_bridge._hoyoclient
 
     async def get_battlesuits(self, ctx : discord.ApplicationContext, uid : int) -> Sequence[FullBattlesuit]:
         try:
@@ -58,8 +55,6 @@ class honkai_hoyo(commands.Cog):
             owned_list.append(battlesuit)
         return owned_list
 
-    async def create_battlesuit_profile(self, battlesuit : FullBattlesuit):
-        pass
 
     def query_battlesuits_by_id(self, battlesuits : Sequence[FullBattlesuit], id : int) -> FullBattlesuit:
         for battlesuit in battlesuits:
