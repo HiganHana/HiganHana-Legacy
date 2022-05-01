@@ -11,7 +11,21 @@ from genshin.models.honkai import FullBattlesuit
 from fuzzywuzzy import process
 from honkaiDex import Battlesuit
 import logging
-from zxutil.FUNCS.img import combine_linear_image, get_combined_name
+from zxutil.FUNCS.img import combine_linear_image
+
+def get_combined_name(*args):
+    if len(args) == 0:
+        return None
+   
+    pend_name = ""
+    for i, arg in enumerate(args):
+        if arg is None:
+            pend_name += "0."
+            continue
+        pend_name += str(arg) + "."
+    
+    return pend_name[:-1]
+
 import bot.funcs as botfunc
 import random
 class honkai_hoyo(commands.Cog):

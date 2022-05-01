@@ -78,4 +78,3 @@ async def check_user_registered(ctx : ApplicationContext, user : discord.User):
         await ctx.respond(embed=embed)
 
     return member
-
