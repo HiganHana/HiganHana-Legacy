@@ -1,12 +1,9 @@
-import logging
 import discord
-from discord import Interaction, Button
-from discord.ext import commands
-from discord.ui import View, InputText,Modal
+from discord import Interaction
+from discord.ui import InputText,Modal
 from honkaiDex.game import valid_lv, valid_na_uid
-from discord.interactions import InteractionResponse
-from bot.conf import bot_bridge
-from zxutil.collections.uitem import ValidationFail
+from bot.conf import ArmandaMember, bot_bridge
+from zxutil.umodel import U_ValidationError
 class uid_form(Modal):
     def __init__(self):
         super().__init__("UID FORM")
@@ -32,17 +29,16 @@ class uid_form(Modal):
             return await interaction.response.send_message(embed=embed)
 
         try:
-            bot_bridge._honkai_tracker.create_item(
+            member = ArmandaMember(
                 discord_id=user_id,
                 uid=uid,
-                lv=int(lv)
+                lv=lv
             )
-        except ValidationFail as e:
-            e : ValidationFail
-            embed.add_field(name="Error", value=f"{e.problematic_key} is invalid ({e.validation_func.__name__})")
+            member.export_this(bot_bridge.ARMANDA_JSON)
+        except U_ValidationError as e:
+            e : U_ValidationError
+            embed.add_field(name="Error", value=e.message)
             return await interaction.response.send_message(embed=embed)
-
-        bot_bridge._honkai_tracker.save()
         
         embed.add_field(name="uid", value=uid)
         embed.add_field(name="lv", value=lv)

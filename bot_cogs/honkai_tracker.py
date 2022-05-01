@@ -1,15 +1,15 @@
 
+from pprint import pprint
 from discord.ext import commands
 from discord.ext.commands import Bot
-from bot.tracker import ArmandaMember
+from bot.conf import ArmandaMember
 from bot.conf import bot_bridge
 import discord
 from discord.interactions import InteractionResponse
 from bot_ui.reg import uid_form
 from discord.utils import get
-from bot import has_roles
-from honkaiDex.game import valid_lv
-from zxutil.collections.uitem import ValidationFail
+from bot.funcs import has_roles
+from zxutil.umodel import U_ValidationError
 
 class cog_tracker(commands.Cog):
     def __init__(self, bot):
@@ -24,7 +24,7 @@ class cog_tracker(commands.Cog):
     async def register(self, ctx):
         ires : InteractionResponse = ctx.interaction.response
 
-        if ctx.author.id in bot_bridge._honkai_tracker.yield_field("discord_id"):
+        if ctx.author.id in ArmandaMember.yield_field("discord_id"):
             embed = discord.Embed(title="Error", description="You are already registered")
             
             return await ctx.respond(embed=embed)
@@ -40,13 +40,14 @@ class cog_tracker(commands.Cog):
     )
     @commands.has_any_role("Impact Vice Leader", "Impact Leader")
     async def unbind(self, ctx, user : discord.User):
-        member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
+        member : ArmandaMember = ArmandaMember.get(discord_id=user.id)
         if member is None:
             embed = discord.Embed(title="Error", description="You are not registered")
             return await ctx.respond(embed=embed)
         
-        bot_bridge._honkai_tracker.remove(member)
-        bot_bridge._honkai_tracker.save()
+        ArmandaMember.remove_this(member)
+        
+        ArmandaMember.export_all(bot_bridge.ARMANDA_JSON, replace=True)
         embed = discord.Embed(title="User Unbinded", description="Unbinded {}".format(user.mention))
         await ctx.respond(embed=embed)
         
@@ -61,7 +62,7 @@ class cog_tracker(commands.Cog):
             user = ctx.author
         
         if user is not None:
-            member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
+            member : ArmandaMember = ArmandaMember.get(discord_id=user.id)
         
             if member is None:
                 embed = discord.Embed(title="Error", description="User not registered")
@@ -69,7 +70,7 @@ class cog_tracker(commands.Cog):
 
             username = user.display_name
         else:
-            member : ArmandaMember = bot_bridge._honkai_tracker.get_one(uid=uid)
+            member : ArmandaMember = ArmandaMember.get(uid=uid)
 
             if member is None:
                 embed = discord.Embed(title="Error", description="User not found")
@@ -106,22 +107,19 @@ class cog_tracker(commands.Cog):
             return await ctx.respond(embed=embed)
 
         # check if user is registered
-        member : ArmandaMember = bot_bridge._honkai_tracker.get_one(discord_id=user.id)
+        member : ArmandaMember = ArmandaMember.get(discord_id=user.id)
         if member is None:
             embed = discord.Embed(title="Error", description="User not registered")
             return await ctx.respond(embed=embed)
 
         try:
-            member.update(
-                lv=lv,
-            )
-        except ValidationFail as e:
-            e : ValidationFail
-            embed = discord.Embed(title="Error", description=f"{e.problematic_key} key is invalid ({e.validation_func.__name__})")
+            member.lv = lv
+        except U_ValidationError as e:
+            e : U_ValidationError
+            embed = discord.Embed(title="Error", description=f"{e.message}")
             return await ctx.respond(embed=embed)
 
-        bot_bridge._honkai_tracker.save()
-    
+        member.export(bot_bridge.ARMANDA_JSON, update_=True)
 
         await ctx.invoke(self.lookup, user=user)
 

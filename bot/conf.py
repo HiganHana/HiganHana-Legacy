@@ -6,13 +6,11 @@ BotBridge will load the specified json file with dict.update(), overwriting exis
 
 from dataclasses import dataclass
 import typing
-from zxutil.collections.bridge import Bridge
 import logging
-
-from zxutil.collections.uitem import UTracker
-from bot.tracker import ArmandaMember, verfication_model
-
-import honkaiDex.profile.cached
+from zxutil.bridge import Bridge
+from zxutil.umodel import UItem, UniqueKey, UPrimaryKey
+from zxutil.folderCacher import FolderCacher
+from honkaiDex.game import valid_lv, valid_na_uid
 
 class BotBridge(Bridge):
     prefix = "!"
@@ -36,18 +34,39 @@ class BotBridge(Bridge):
     log_to_file = False
     log_file = "bot.log"
 
-    #
-    _honkai_tracker : UTracker = UTracker(
-        uitem_type=ArmandaMember,
-        data="appdata/honkai_members.json",
-        verification_model=verfication_model
-    )
-
     # permissions
     MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
+    BOOSTER_PLAN = ["Server Booster"]
+    IMPACT_MEMBER = ["Impact Member"]
 
     # hoyo
     ltuid : int
     ltoken : str
+
+    # armanda member base
+    ARMANDA_JSON  = "appdata/armanda_members.json"
+
+    # image saving
+    _pulled_cacher : FolderCacher
+    _merged_cacher : FolderCacher
+
+
+def valid_genshin_id(value):
+    str_val = str(value)
+
+    if len(str_val) != 8:
+        return False
+
+    if not str_val.isdigit():
+        return False
+    
+    return int(str_val)
+
+@dataclass
+class ArmandaMember(UItem):
+    discord_id : typing.Union[int, UPrimaryKey]
+    uid : typing.Union[int, UniqueKey, valid_na_uid]
+    lv : typing.Union[int, valid_lv]
+    genshin_id : typing.Union[int, UniqueKey, valid_genshin_id] = None
 
 bot_bridge : BotBridge = BotBridge(file="appdata/config.json")
