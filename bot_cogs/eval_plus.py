@@ -9,6 +9,7 @@ from bot.conf import bot_bridge, ArmandaMember
 from honkaiDex import BaseCharacter, Battlesuit, StigamataSet
 import inspect
 from pprint import pprint, pformat
+from zxutil.cond import CondField, CondLex
 #---------------misc--------------------
 BANNED_PHRASES = [
     "sys.exit",
