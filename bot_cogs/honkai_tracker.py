@@ -116,7 +116,7 @@ class cog_tracker(commands.Cog):
             member.lv = lv
         except U_ValidationError as e:
             e : U_ValidationError
-            embed = discord.Embed(title="Error", description=f"{e.message}")
+            embed = discord.Embed(title="Error", description=f"{e}")
             return await ctx.respond(embed=embed)
 
         member.export(bot_bridge.ARMANDA_JSON, update_=True)

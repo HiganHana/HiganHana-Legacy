@@ -55,7 +55,12 @@ class honkai_hoyo(commands.Cog):
             owned_list.append(battlesuit)
         return owned_list
 
-
+    def create_owned_str_list(self, battlesuits: Sequence[FullBattlesuit]):
+        owned_str = ""
+        for i, battlesuit in enumerate(battlesuits):
+            owned_str += f"{battlesuit.id} `{battlesuit.name} ({battlesuit.rank})`"
+        return owned_str
+        
     def query_battlesuits_by_id(self, battlesuits : Sequence[FullBattlesuit], id : int) -> FullBattlesuit:
         for battlesuit in battlesuits:
             if battlesuit.id == id:
@@ -121,7 +126,7 @@ class honkai_hoyo(commands.Cog):
         battlesuit = None
         if battlesuit_name.isdigit() and (battlesuit := self.query_battlesuits_by_id(battlesuits, int(battlesuit_name))) is None:
             embed = discord.Embed(title="Error", description="Battlesuit not found")
-            embed.add_field(name="Owned", value="\n".join(self.create_owned_list(battlesuits)))
+            embed.add_field(name="Owned", value="\n".join(self.create_owned_str_list(battlesuits)))
             return await ctx.respond(embed=embed)
         
         if battlesuit is None:
@@ -129,7 +134,7 @@ class honkai_hoyo(commands.Cog):
         
         if battlesuit is None:
             embed = discord.Embed(title="Error", description="Battlesuit not found")
-            embed.add_field(name="Owned", value="\n".join(self.create_owned_list(battlesuits)))
+            embed.add_field(name="Owned", value="\n".join(self.create_owned_str_list(battlesuits)))
             return await ctx.respond(embed=embed)
 
         # create profile
