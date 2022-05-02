@@ -65,5 +65,15 @@ class cog_debug(commands.Cog):
         except Exception as e:
             return await self.build_and_send_embed(ctx, "Reload cog", f"Error: {e}")
 
+    @commands.command(name="echo")
+    @commands.has_any_role(bot_bridge.BOT_DEV)
+    async def echo_x(self, ctx, *input):
+        line = ""
+        for x in input:
+            line += x + " "
+
+        await ctx.send(line)
+        await ctx.message.delete()
+    
 def setup(bot):
     bot.add_cog(cog_debug(bot))
