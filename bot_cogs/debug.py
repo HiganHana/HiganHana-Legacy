@@ -1,95 +1,70 @@
-from contextlib import redirect_stdout
 from pprint import pformat
-import typing
 from discord.ext import commands
-from discord.ext.commands import Bot
-from bot.conf import bot_bridge
 import discord
-from discord.interactions import InteractionResponse
-from bot_ui.reg import uid_form
-import honkaiDex
-from honkaiDex import Battlesuit,BaseCharacter,StigamataSet
-import io
-import inspect
+from bot.conf import ArmandaMember, bot_bridge
+
 class cog_debug(commands.Cog):
     def __init__(self, bot):
-        self.bot : Bot = bot
-        
+        self.bot : discord.Bot = bot
+
+    async def build_and_send_embed(self, ctx,title:str, data):
+        embed = discord.Embed(title=title, description=f"by {ctx.author.mention}")
+        if data is not None:
+            data =pformat(data, indent=4)
+            data = "```" + data + "```"
+            embed.add_field(name="data", value=data)
+        return await ctx.send(embed=embed)
+
     @commands.command(name="dump_tracker")
-    @commands.has_any_role(*bot_bridge.MOD_ROLES)
+    @commands.has_any_role(bot_bridge.BOT_DEV)
     async def dump_tracker(self, ctx):
-        await ctx.send(f"""```
-{pformat(bot_bridge._honkai_tracker._data)}
-```""")
+        ret = []
+        for member in ArmandaMember.yield_instance():
+            member : ArmandaMember
+            ret.append(member.uid)
+
+        return await self.build_and_send_embed(ctx, "Dump tracker", ret)
 
     @commands.command(name="shutdown")
-    @commands.has_any_role(*bot_bridge.MOD_ROLES)
+    @commands.has_any_role(bot_bridge.BOT_DEV)
     async def shutdown(self, ctx):
-        await ctx.send("Shutting down...")
+        await self.build_and_send_embed(ctx, "Shutdown", "Shutting down...")
         await self.bot.close()
         exit(0)
 
     @commands.command(name="list_cogs")
-    @commands.has_any_role(*bot_bridge.MOD_ROLES)
+    @commands.has_any_role(bot_bridge.BOT_DEV)
     async def list_cogs(self, ctx):
-        await ctx.send(f"""```
-{pformat(self.bot.cogs)}
-```""")
-    
-    @commands.command(name="eval")
-    @commands.has_any_role("Bot Dev")
-    async def eval_code(self, ctx, *code):
-        
-        line = ""
-        for c in code:
-            line = line + c + " "
-        
-        code = str(line).strip()
-        embed = discord.Embed(title="Eval Result", description=f"input:```{code}```")
+        return await self.build_and_send_embed(ctx, "Cogs", self.bot.cogs)
 
-        if "os.system" in code:
-            embed.add_field(name="Error", value="os.system is not allowed")
-            return await ctx.respond(embed=embed)
-
+    @commands.command(name="unload_cog")
+    @commands.has_any_role(bot_bridge.BOT_DEV)
+    async def unload_cog(self, ctx, cog_name):
         try:
-            result = eval(code)
-
-            output = None
-            with io.StringIO() as buf, redirect_stdout(buf):
-                result = await self.exec_eval(result)
-                output = buf.getvalue()
-                    
-                if output is not None:
-                    embed.add_field(name="stdout", value=f"```{output}```")
-            embed.add_field(name="result", value=f"```{pformat(result)}```")
-            
-            
+            self.bot.unload_extension(cog_name)
+            return await self.build_and_send_embed(ctx, "Unload cog", f"Cog {cog_name} unloaded.")
         except Exception as e:
-            embed.add_field(name="error", value=f"```{pformat(e)}```")
-        await ctx.send(embed=embed)
+            return await self.build_and_send_embed(ctx, "Unload cog", f"Error: {e}")
 
-    async def exec_callable(self, val, *args):
-        if inspect.iscoroutinefunction(val):
-            return await val(*args)
+    @commands.command(name="load_cog")
+    @commands.has_any_role(bot_bridge.BOT_DEV)
+    async def load_cog(self, ctx, cog_name):
+        try:
+            self.bot.load_extension(bot_bridge.cog_folder+"."+cog_name)
+            return await self.build_and_send_embed(ctx, "Load cog", f"Cog {cog_name} loaded.")
+        except Exception as e:
+            return await self.build_and_send_embed(ctx, "Load cog", f"Error: {e}")
 
-        val = val(*args)
-        return val
-        
-
-    async def exec_eval(self, val):
-        if callable(val):
-            return await self.exec_callable(val)
-
-        if isinstance(val, typing.Iterable) and len(val) == 1:
-            val = val[0]
-            return await self.exec_callable(val)
-
-        if isinstance(val, typing.Iterable) and len(val) > 1:
-            val, *args = val
-
-            return await self.exec_callable(val, *args)
-        
-        return val
+    @commands.command(name="reload_cog")
+    @commands.has_any_role(bot_bridge.BOT_DEV)
+    async def reload_cog(self, ctx, cog_name):
+        cog_name =bot_bridge.cog_folder+"."+cog_name
+        try:
+            self.bot.unload_extension(cog_name)
+            self.bot.load_extension(cog_name)
+            return await self.build_and_send_embed(ctx, "Reload cog", f"Cog {cog_name} reloaded.")
+        except Exception as e:
+            return await self.build_and_send_embed(ctx, "Reload cog", f"Error: {e}")
 
 def setup(bot):
     bot.add_cog(cog_debug(bot))
