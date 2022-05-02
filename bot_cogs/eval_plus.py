@@ -84,7 +84,7 @@ class cog_eval(commands.Cog):
         # make embed
         embed = discord.Embed(title="Error", description="an error occured while executing your code.")
         embed.add_field(name="Code", value=self.create_codeblock(code_line))
-        if (e_message := self.create_codeblock(e.message)) is not None:
+        if (e_message := self.create_codeblock(e)) is not None:
             embed.add_field(name="Error", value=e_message, inline=False)
         if (stacktrace := self.create_codeblock(pformat(stack))) is not None:
             embed.add_field(name="Stacktrace", value=stacktrace, inline=False)
@@ -100,7 +100,7 @@ class cog_eval(commands.Cog):
             return await self.not_allowed_message(ctx, single_line_code)
 
         try:
-            result = eval(code)
+            result = eval(single_line_code)
             output = None
             with io.StringIO() as buf, redirect_stdout(buf):
                 result = await self.exec_eval(result)
@@ -112,7 +112,7 @@ class cog_eval(commands.Cog):
                 XSTORE.set(cache_key, output)
 
             embed = discord.Embed(title="Eval", description="Evaluation successful.")
-            embed.add_field(name="Code", value=self.create_codeblock(code))
+            embed.add_field(name="Code", value=self.create_codeblock(single_line_code))
             if result is not None:
                 embed.add_field(name="Result", value=self.create_codeblock(result), inline=False)
             if output is not None:

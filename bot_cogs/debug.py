@@ -19,9 +19,8 @@ class cog_debug(commands.Cog):
     @commands.has_any_role(bot_bridge.BOT_DEV)
     async def dump_tracker(self, ctx):
         ret = []
-        for member in ArmandaMember.yield_instance():
-            member : ArmandaMember
-            ret.append(member.uid)
+        for uid in ArmandaMember.yield_field("uid"):
+            ret.append(uid)
 
         return await self.build_and_send_embed(ctx, "Dump tracker", ret)
 
@@ -35,7 +34,7 @@ class cog_debug(commands.Cog):
     @commands.command(name="list_cogs")
     @commands.has_any_role(bot_bridge.BOT_DEV)
     async def list_cogs(self, ctx):
-        return await self.build_and_send_embed(ctx, "Cogs", self.bot.cogs)
+        return await self.build_and_send_embed(ctx, "Cogs", [cog for cog in self.bot.cogs.values()])
 
     @commands.command(name="unload_cog")
     @commands.has_any_role(bot_bridge.BOT_DEV)
