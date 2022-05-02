@@ -130,11 +130,11 @@ class cog_eval(commands.Cog):
         if inspect.isgeneratorfunction(val) or inspect.isfunction(val):
             return await self.exec_callable(val)
 
-        if isinstance(val, (set, list, tuple)) and len(val) == 1:
+        if isinstance(val, (set, list, tuple)) and callable(val[0]) and len(val) == 1:
             val = val[0]
             return await self.exec_callable(val)
 
-        if isinstance(val, (set, list, tuple)) and len(val) > 1:
+        if isinstance(val, (set, list, tuple)) and callable(val[0]) and len(val) > 1:
             val, *args = val
 
             return await self.exec_callable(val, *args)
