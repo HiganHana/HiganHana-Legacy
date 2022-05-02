@@ -116,7 +116,7 @@ class cog_eval(commands.Cog):
             embed.add_field(name="Code", value=self.create_codeblock(single_line_code))
             if result is not None:
                 embed.add_field(name="Result", value=self.create_codeblock(result), inline=False)
-            if output is not None:
+            if output is not None and len(output) > 0:
                 embed.add_field(name="Output", value=self.create_codeblock(output), inline=False)
             return await ctx.send(embed=embed)
 
