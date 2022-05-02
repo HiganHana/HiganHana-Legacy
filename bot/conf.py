@@ -12,6 +12,8 @@ from zxutil.umodel import UItem, UniqueKey, UPrimaryKey
 from zxutil.folderCacher import FolderCacher
 from honkaiDex.game import valid_lv, valid_na_uid
 import genshin
+import discord
+
 
 class BotBridge(Bridge):
     prefix = "!"
@@ -39,7 +41,7 @@ class BotBridge(Bridge):
     MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
     BOOSTER_PLAN = ["Server Booster"]
     IMPACT_MEMBER = ["Impact Member"]
-
+    BOT_DEV = "Bot Dev"
     # hoyo
     ltuid : int
     ltoken : str
@@ -52,6 +54,7 @@ class BotBridge(Bridge):
     _merged_cacher : FolderCacher
 
     #
+    _bot : discord.Bot
     _hoyoclient : genshin.Client
 
 def valid_genshin_id(value):

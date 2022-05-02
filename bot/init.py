@@ -31,7 +31,7 @@ def run_bot_and_flask():
         intents=intents,
         case_insensitive=bot_bridge.case_insensitive
     )
-
+    bot_bridge._bot = bot
 
     cogs = []
     # get all py files in cogs folder
