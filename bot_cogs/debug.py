@@ -81,7 +81,7 @@ class cog_debug(commands.Cog):
         await ctx.message.delete()
         if counter >= 10:
             counter = 10
-        await ctx.channel.purge(counter)
+        await ctx.channel.purge(limit=counter)
                 
     
 def setup(bot):
