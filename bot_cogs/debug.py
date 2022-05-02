@@ -74,6 +74,15 @@ class cog_debug(commands.Cog):
 
         await ctx.send(line)
         await ctx.message.delete()
+
+    @commands.command(name="bury")
+    @commands.has_any_role(bot_bridge.BOT_DEV)
+    async def bury(self, ctx, counter : int):
+        await ctx.message.delete()
+        if counter >= 10:
+            counter = 10
+        await ctx.channel.purge(counter)
+                
     
 def setup(bot):
     bot.add_cog(cog_debug(bot))
