@@ -30,11 +30,11 @@ class BotBridge(Bridge):
     blueprints_folder = "flask_cogs"
 
     # logging
-    log_level = logging.DEBUG
+    log_level = logging.WARNING
     log_format = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
     
     log_ignore_discord = True
-    log_to_file = False
+    log_to_file = True
     log_file = "bot.log"
 
     # permissions
@@ -60,7 +60,7 @@ class BotBridge(Bridge):
 def valid_genshin_id(value):
     str_val = str(value)
 
-    if len(str_val) != 8:
+    if len(str_val) != 9:
         return False
 
     if not str_val.isdigit():

@@ -31,3 +31,6 @@ if __name__ == "__main__":
     ArmandaMember.from_dict(bot_bridge.ARMANDA_JSON)
 
     run_bot_and_flask()
+
+    while True:
+        continue

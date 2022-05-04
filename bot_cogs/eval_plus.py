@@ -101,9 +101,10 @@ class cog_eval(commands.Cog):
             return await self.not_allowed_message(ctx, single_line_code)
 
         try:
-            result = eval(single_line_code)
+            
             output = None
             with io.StringIO() as buf, redirect_stdout(buf):
+                result = eval(single_line_code)
                 result = await self.exec_eval(result)
                 output = buf.getvalue()
                 output = output.strip()
