@@ -17,7 +17,7 @@ def run_bot_and_flask():
     logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, stream=sys.stdout)
 
     if not bot_bridge.log_ignore_discord:
-        logging.getLogger("discord").setLevel(logging.DEBUG)
+        logging.getLogger("discord").setLevel(bot_bridge.log_level)
     if bot_bridge.log_to_file:
         logging.getLogger().addHandler(logging.FileHandler(bot_bridge.log_file))
 
@@ -31,7 +31,7 @@ def run_bot_and_flask():
         intents=intents,
         case_insensitive=bot_bridge.case_insensitive
     )
-
+    bot_bridge._bot = bot
 
     cogs = []
     # get all py files in cogs folder
@@ -72,6 +72,10 @@ def run_bot_and_flask():
     logging.debug(f"[flask init] Flask thread started")
     logging.debug(f"[bot init] bot token: {bot_bridge.token}")
 
+    @flask_app.route("/")
+    def index():
+        return "<h1>Bot is running</h1>"
+    
     #
     if bot_bridge.no_bot:
         fthread.join()

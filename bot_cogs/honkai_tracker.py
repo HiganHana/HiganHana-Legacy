@@ -6,7 +6,6 @@ from bot.conf import ArmandaMember
 from bot.conf import bot_bridge
 import discord
 from discord.interactions import InteractionResponse
-from bot_ui.reg import uid_form
 from discord.utils import get
 from bot.funcs import has_roles
 from zxutil.umodel import U_ValidationError
@@ -21,7 +20,7 @@ class cog_tracker(commands.Cog):
         description="Register your honkai profile",
         
     )
-    async def register(self, ctx):
+    async def register(self, ctx, uid : int, lv : int, genshin_id = None):
         ires : InteractionResponse = ctx.interaction.response
 
         if ctx.author.id in ArmandaMember.yield_field("discord_id"):
@@ -29,9 +28,30 @@ class cog_tracker(commands.Cog):
             
             return await ctx.respond(embed=embed)
 
-        form = uid_form()
+        if not has_roles(ctx, "Impact Member"):
+            embed = discord.Embed(title="Error", description="You are not Impact Member")
+            return await ctx.respond(embed=embed)
 
-        await ires.send_modal(form)
+        try:
+            member = ArmandaMember(
+                discord_id=ctx.author.id,
+                uid=uid,
+                lv=lv,
+                genshin_id=genshin_id
+            )
+            member.export_this(bot_bridge.ARMANDA_JSON)
+        except U_ValidationError as e:
+            e : U_ValidationError
+            embed = discord.Embed(title="Error", description=e)
+            return await ctx.respond(embed=embed)
+
+        #invoke lookup
+        await ctx.invoke(self.lookup, uid=uid)
+            
+
+        """form = uid_form()
+
+        await ires.send_modal(form)"""
         
     @commands.slash_command(
         name="unbind",
@@ -84,10 +104,21 @@ class cog_tracker(commands.Cog):
         
         embed.add_field(name="uid", value=member.uid)
         embed.add_field(name="lv", value=member.lv)
+        if member.genshin_id is not None:
+            embed.add_field(name="Genshin ID", value=member.genshin_id)
         
         return await ctx.respond(embed=embed)
     
-    
+    def _update(self,member : ArmandaMember,  **kwargs):
+        """
+        this method drops all none values from kwargs and perform update ArmandaMember
+        """
+        if len(kwargs) == 0:
+            return
+
+        kwargs = {k:v for k,v in kwargs.items() if v is not None}
+        
+        member.update(**kwargs)
 
     @commands.slash_command(
         name="update", 
@@ -95,7 +126,14 @@ class cog_tracker(commands.Cog):
         description="Update honkai profile"
     )
     @commands.cooldown(5,60, commands.BucketType.guild)
-    async def update(self, ctx : discord.ApplicationContext, lv : int = None, other_user : discord.User = None):
+    async def update(
+        self, 
+        ctx : discord.ApplicationContext, 
+        lv : int = None, 
+        genshin_id : int =None,
+        other_user : discord.User = None
+
+    ):
         if other_user is None:
             user = ctx.author
         else:
@@ -113,10 +151,10 @@ class cog_tracker(commands.Cog):
             return await ctx.respond(embed=embed)
 
         try:
-            member.lv = lv
+            self._update(member, lv=lv, genshin_id=genshin_id)
         except U_ValidationError as e:
             e : U_ValidationError
-            embed = discord.Embed(title="Error", description=f"{e.message}")
+            embed = discord.Embed(title="Error", description=f"{e}")
             return await ctx.respond(embed=embed)
 
         member.export(bot_bridge.ARMANDA_JSON, update_=True)

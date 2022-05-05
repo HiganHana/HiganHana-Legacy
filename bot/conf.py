@@ -11,6 +11,9 @@ from zxutil.bridge import Bridge
 from zxutil.umodel import UItem, UniqueKey, UPrimaryKey
 from zxutil.folderCacher import FolderCacher
 from honkaiDex.game import valid_lv, valid_na_uid
+import genshin
+import discord
+
 
 class BotBridge(Bridge):
     prefix = "!"
@@ -27,18 +30,18 @@ class BotBridge(Bridge):
     blueprints_folder = "flask_cogs"
 
     # logging
-    log_level = logging.DEBUG
+    log_level = logging.WARNING
     log_format = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
     
     log_ignore_discord = True
-    log_to_file = False
+    log_to_file = True
     log_file = "bot.log"
 
     # permissions
     MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
     BOOSTER_PLAN = ["Server Booster"]
     IMPACT_MEMBER = ["Impact Member"]
-
+    BOT_DEV = "Bot Dev"
     # hoyo
     ltuid : int
     ltoken : str
@@ -50,11 +53,14 @@ class BotBridge(Bridge):
     _pulled_cacher : FolderCacher
     _merged_cacher : FolderCacher
 
+    #
+    _bot : discord.Bot
+    _hoyoclient : genshin.Client
 
 def valid_genshin_id(value):
     str_val = str(value)
 
-    if len(str_val) != 8:
+    if len(str_val) != 9:
         return False
 
     if not str_val.isdigit():
