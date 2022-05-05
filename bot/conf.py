@@ -34,6 +34,7 @@ class BotBridge(Bridge):
     log_format = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
     
     log_ignore_discord = True
+    log_lv_discord = logging.WARNING
     log_to_file = True
     log_file = "bot.log"
 
