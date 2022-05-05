@@ -45,3 +45,16 @@ async def check_user_registered(ctx : ApplicationContext, user : discord.User):
         await ctx.respond(embed=embed)
 
     return member
+
+# for loading python files in folders
+def load_python_file(path : str):
+    """
+    Loads a list of python files from a path.
+    """
+    if not os.path.isdir(path) and not os.path.exists(path):
+        raise FileNotFoundError(f"{path} does not exist")
+    files = os.listdir(path)
+    files = [file for file in files if file.endswith(".py") and not file.startswith("_")]
+    files = [file[:-3] for file in files]
+    return files
+    
