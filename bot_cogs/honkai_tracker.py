@@ -5,7 +5,6 @@ from discord.ext.commands import Bot
 from bot.conf import ArmandaMember
 from bot.conf import bot_bridge
 import discord
-from discord.interactions import InteractionResponse
 from discord.utils import get
 from bot.funcs import has_roles
 from zxutil.umodel import U_ValidationError
@@ -21,7 +20,7 @@ class cog_tracker(commands.Cog):
         
     )
     async def register(self, ctx, uid : int, lv : int, genshin_id = None):
-        ires : InteractionResponse = ctx.interaction.response
+        #ires : InteractionResponse = ctx.interaction.response
 
         if ctx.author.id in ArmandaMember.yield_field("discord_id"):
             embed = discord.Embed(title="Error", description="You are already registered")
