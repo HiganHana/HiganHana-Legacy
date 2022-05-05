@@ -25,7 +25,7 @@ def run_bot_and_flask():
     )
     bot_bridge._bot = bot
 
-
+    #main cogs
     for cog in funcs.load_python_file(bot_bridge.cog_folder):
         logging.info(f"[bot init] Loading cog {bot_bridge.cog_folder}.{cog}")
         try:
@@ -37,6 +37,17 @@ def run_bot_and_flask():
             logging.error(e)
             logging.error(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
 
+    #testing cogs
+    for cog in funcs.load_python_file(bot_bridge.cog_building):
+        logging.info(f"[bot init] Loading cog {bot_bridge.cog_building}.{cog}")
+        try:
+            bot.load_extension(bot_bridge.cog_building+"."+cog)
+        except Exception as e:
+            # stacktrace
+            import traceback
+            traceback.print_exc()
+            logging.error(e)
+            logging.error(f"[bot init] Failed to load cog {bot_bridge.cog_folder}.{cog}")
 
     # setup flask
     flask_app = Flask(__name__)

@@ -20,6 +20,7 @@ class BotBridge(Bridge):
     case_insensitive = True
     cogs = []
     cog_folder = "bot_cogs"
+    cog_building = "building_cogs"
     allowed_servers : typing.List[int]
     token : str
     no_bot : bool = False
