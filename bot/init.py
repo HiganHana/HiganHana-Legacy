@@ -13,14 +13,6 @@ import bot.funcs as funcs
 
 # ANCHOR
 def run_bot_and_flask():
-    # setup logging
-    logging.basicConfig(level=bot_bridge.log_level, format=bot_bridge.log_format, stream=sys.stdout)
-
-    if not bot_bridge.log_ignore_discord:
-        logging.getLogger("discord").setLevel(bot_bridge.log_level)
-    if bot_bridge.log_to_file:
-        logging.getLogger().addHandler(logging.FileHandler(bot_bridge.log_file))
-
     # setup bot
     intents : discord.Intents = discord.Intents.default()
     intents.members = True
