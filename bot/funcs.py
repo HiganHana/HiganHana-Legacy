@@ -4,8 +4,6 @@ import requests
 import discord
 from bot.conf import ArmandaMember
 import os
-from pprint import pprint
-import logging
 
 
 def has_roles(ctx : ApplicationContext, *rolenames):
