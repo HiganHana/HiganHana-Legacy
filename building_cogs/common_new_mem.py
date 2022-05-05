@@ -25,13 +25,13 @@ class new_member(commands.Cog):
         
         #Honkai Impact field
         embed.add_field(
-            title = "Honkai Impact Players",
+            name = "Honkai Impact Players",
             value = "If you're applying or already in the armada, **Please use the command /register to get started**"
         )
         
         #Honkai Star Rail
         embed.add_field(
-            title = "Honkai Star Rail Players",
+            name = "Honkai Star Rail Players",
             value = "The game is currently in a closed contracted beta test, please avoid leaking anything here cuz last thing I need is a lawsuit on my ass"
         )
 
