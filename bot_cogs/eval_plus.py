@@ -10,6 +10,8 @@ from honkaiDex import BaseCharacter, Battlesuit, StigamataSet
 import inspect
 from pprint import pprint, pformat
 from zxutil.cond import CondField, CondLex
+from discord.utils import get, get_or_fetch
+import bot.funcs as funcs
 #---------------misc--------------------
 BANNED_PHRASES = [
     "sys.exit",
