@@ -14,13 +14,24 @@ class cog_bruh(commands.Cog):
         
     @commands.Cog.listener("on_message")
     async def echoer(self, message : discord.Message):
+        if message.channel.id != 766134112028983326:
+            return
+        
+        if len(message.content) == 0:
+            return
+        
         if message.author.bot or message.content.startswith("!") or len(message.content) > 50:
             return
         if self.grace > 0:
             self.grace -= 1
         
         # if matching any of the activate_instanta
-        if any(x in message.content.lower() for x in self.activate_instanta) and message.author not in self.temp_ban and self.grace <= 0:
+        if (
+            any(x in message.content.lower() for x in self.activate_instanta) 
+            and message.author not in self.temp_ban 
+            and self.grace <= 0
+            and random.randint(1, 5) > 2
+        ):
             await message.channel.send(message.content)
             self.count = 0
             self.last_message = None   
@@ -43,7 +54,7 @@ class cog_bruh(commands.Cog):
             return
 
         random_number = random.randint(self.count, 5)
-        if random_number <= 2:
+        if random_number <= 4:
             return
             
         await message.channel.send(message.content)

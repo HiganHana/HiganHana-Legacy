@@ -104,6 +104,8 @@ class cog_tracker(commands.Cog):
         
         embed.add_field(name="uid", value=member.uid)
         embed.add_field(name="lv", value=member.lv)
+        if member.genshin_id is not None:
+            embed.add_field(name="Genshin ID", value=member.genshin_id)
         
         return await ctx.respond(embed=embed)
     
@@ -113,6 +115,8 @@ class cog_tracker(commands.Cog):
         """
         if len(kwargs) == 0:
             return
+
+        kwargs = {k:v for k,v in kwargs.items() if v is not None}
         
         member.update(**kwargs)
 
