@@ -3,15 +3,9 @@ from discord import ApplicationContext
 import requests
 import discord
 from bot.conf import ArmandaMember
-import logging
 import os
 from pprint import pprint
-from discord.ext import commands
 import logging
-import sys
-from flask import Flask
-from threading import Thread
-import importlib
 
 
 def has_roles(ctx : ApplicationContext, *rolenames):
@@ -25,33 +19,6 @@ def has_roles(ctx : ApplicationContext, *rolenames):
             return True
     return False
 
-
-def download_image_from_url(url : str, filename : str):
-    """
-    Downloads an image from a url and saves it to a file.
-    """
-    # if filename already in cache, return
-    if os.path.exists(os.path.join("cache", "base", filename)):
-        return
-
-    if not filename:
-        return
-
-    path = os.path.join("cache","base", filename)
-
-    if os.path.exists(path):
-        return
-    
-    response = requests.get(url, stream=True)
-    with open(path, 'wb') as out_file:
-        out_file.write(response.content)
-
-def batch_download(**kwargs):
-    """
-    Downloads images from a list of urls.
-    """
-    for filename, url  in kwargs.items():
-        download_image_from_url(url, filename)
 
 # misc
 from PIL import Image
