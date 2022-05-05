@@ -3,45 +3,15 @@ import discord
 from discord.ext import commands
 from discord.bot import Bot
 from bot.conf import bot_bridge
-help = discord.SlashCommandGroup(name="help", description="Help you get familiar with this server")
-class new_member(commands.Cog):
+
+class help_command(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-       
-        
-    #Fresh people join this discord TODO add embed and infomation,
-    @commands.slash_command(name="yahallo")
-    async def new_member(self, ctx):
-        #Create embed
-        embed = discord.Embed(
-            title = "Welcome to HiganHana",
-            description = f"Welcome to the server @{ctx.author.name}! Check out #chill-chat to give yourself a role!",
-            color = discord.colour.red(),
-        )
-        
-        #Honkai Impact field
-        embed.add_field(
-            title = "Honkai Impact Players",
-            value = "If you're applying or already in the armada, **Please use the command /register to get started**"
-        )
-        
-        #Honkai Star Rail
-        embed.add_field(
-            title = "Honkai Star Rail Players",
-            value = "The game is currently in a closed contracted beta test, please avoid leaking anything here cuz last thing I need is a lawsuit on my ass"
-        )
-        
-        #Hebban field
-        embed.add_field(
-            title = "Heaven Burns Red Players",
-            value = "Kiyan can answer some questions so don't hesitate to ask him"
-        )
-        await ctx.respond(embed = embed)
         
         
-    #create a help command to guide people
-    
-    
+    #create a help command to guide people  
+    help = discord.SlashCommandGroup("help", "Help you get familiar with this server")
+      
     #Overall
     @help.command
     async def overall(ctx):
@@ -165,5 +135,5 @@ class new_member(commands.Cog):
         await ctx.respond(embed = embed)
 
 def setup(bot):
-    bot.add_cog(new_member(bot))
+    bot.add_cog(help_command(bot))
 
