@@ -9,7 +9,7 @@ from flask import Flask
 from threading import Thread
 import importlib
 from bot.conf import bot_bridge
-
+import bot.funcs as funcs
 
 # ANCHOR
 def run_bot_and_flask():
@@ -33,17 +33,8 @@ def run_bot_and_flask():
     )
     bot_bridge._bot = bot
 
-    cogs = []
-    # get all py files in cogs folder
-    for file in os.listdir(bot_bridge.cog_folder):
-        if file.endswith(".py"):
-            # get the name of the file without the .py extension
-            cog_name = file[:-3]
-            # add the cog to the list
-            cogs.append(cog_name)
 
-
-    for cog in cogs:
+    for cog in funcs.load_python_file(bot_bridge.cog_folder):
         logging.info(f"[bot init] Loading cog {bot_bridge.cog_folder}.{cog}")
         try:
             bot.load_extension(bot_bridge.cog_folder+"."+cog)
@@ -58,14 +49,11 @@ def run_bot_and_flask():
     # setup flask
     flask_app = Flask(__name__)
     # load blueprints dynamically
-    for file in os.listdir(bot_bridge.blueprints_folder):
-        if file.endswith(".py"):
-            # get the name of the file without the .py extension
-            blueprint_name = file[:-3]
-            # add the blueprint to the list
-            logging.info(f"[flask init] Loading blueprint {blueprint_name}")
-            module = importlib.import_module(bot_bridge.blueprints_folder+"."+blueprint_name)
-            flask_app.register_blueprint(getattr(module, blueprint_name))
+    for blueprint_name in funcs.load_python_file(bot_bridge.blueprints_folder):
+        # add the blueprint to the list
+        logging.info(f"[flask init] Loading blueprint {blueprint_name}")
+        module = importlib.import_module(bot_bridge.blueprints_folder+"."+blueprint_name)
+        flask_app.register_blueprint(getattr(module, blueprint_name))
 
     fthread = Thread(name="flask",target=flask_app.run, kwargs={"host": bot_bridge.host, "port": bot_bridge.port})
     fthread.start()
