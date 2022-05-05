@@ -7,7 +7,6 @@ from discord.ext.commands import Bot
 from bot.conf import ArmandaMember
 from bot.conf import bot_bridge
 import discord
-from discord.commands import Option
 from honkaiDex import BaseCharacter, Battlesuit, StigamataSet
 
 class NotRegisteredError(Exception):pass
