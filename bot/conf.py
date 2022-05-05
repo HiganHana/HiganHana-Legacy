@@ -40,7 +40,7 @@ class BotBridge(Bridge):
     log_file = "bot.log"
 
     # permissions
-    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
+    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","Jasione","Bot Dev"]
     BOOSTER_PLAN = ["Server Booster"]
     IMPACT_MEMBER = ["Impact Member"]
     BOT_DEV = "Bot Dev"

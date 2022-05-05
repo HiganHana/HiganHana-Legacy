@@ -19,10 +19,9 @@ class new_member(commands.Cog):
         #Create embed
         embed = discord.Embed(
             title = "Welcome to HiganHana",
-            description = f"Welcome to the server @{ctx.author.name}! Check out #chill-chat to give yourself a role!",
-            color = discord.colour.red(),
+            description = f"Welcome to the server <@{ctx.author.id}>! Check out #chill-chat to give yourself a role!",
         )
-        
+    
         #Honkai Impact field
         embed.add_field(
             name = "Honkai Impact Players",
@@ -34,8 +33,18 @@ class new_member(commands.Cog):
             name = "Honkai Star Rail Players",
             value = "The game is currently in a closed contracted beta test, please avoid leaking anything here cuz last thing I need is a lawsuit on my ass"
         )
-
+        
+        #add role
+        member = ctx.author
+        role = discord.utils.get(ctx.guild.roles, name="Member")
+        await member.add_roles(role)
+        
+        #send embed
         await ctx.respond(embed = embed)
+        
+        #send a message to main chat
+        channel = self.bot.get_channel(766134112028983326) #963293158626689124 <- testing
+        await channel.send(f"Everyone say hi to <@{ctx.author.id}>! Enjoy your stay!")
 
 
 def setup(bot):
