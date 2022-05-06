@@ -20,6 +20,7 @@ class BotBridge(Bridge):
     case_insensitive = True
     cogs = []
     cog_folder = "bot_cogs"
+    cog_building = "building_cogs"
     allowed_servers : typing.List[int]
     token : str
     no_bot : bool = False
@@ -34,11 +35,12 @@ class BotBridge(Bridge):
     log_format = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
     
     log_ignore_discord = True
+    log_lv_discord = logging.WARNING
     log_to_file = True
     log_file = "bot.log"
 
     # permissions
-    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","admin","Bot Dev"]
+    MOD_ROLES = ["Impact Vice Leader", "Impact Leader","Jasione","Bot Dev"]
     BOOSTER_PLAN = ["Server Booster"]
     IMPACT_MEMBER = ["Impact Member"]
     BOT_DEV = "Bot Dev"

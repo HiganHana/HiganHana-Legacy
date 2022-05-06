@@ -5,7 +5,6 @@ from discord.ext import commands
 from bot.conf import bot_bridge
 import discord
 from discord.utils import get
-from bot.funcs import batch_download, download_image_from_url
 from genshin import Client
 from genshin.models.honkai import FullBattlesuit
 from fuzzywuzzy import process
