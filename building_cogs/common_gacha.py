@@ -19,14 +19,11 @@ class gacha_cog(commands.Cog):
         self.bot = bot
     
     #slash group
+    gacha = discord.SlashCommandGroup("gacha", "for the addicts")
     
     #single pull
-    @commands.slash_command(
-        name = "gacha-single",
-        guild_ids=bot_bridge.allowed_servers,
-        description="Do a single pull"
-    )
-    async def gacha_single(self, ctx):
+    @gacha.command()
+    async def single(self, ctx):
         result = self.the_math()
         
         if self.global_pity(1):
@@ -43,12 +40,8 @@ class gacha_cog(commands.Cog):
         await ctx.respond(embed = embed)
 
     #multi pulls
-    @commands.slash_command(
-        name = "gacha-multi",
-        guild_ids = bot_bridge.allowed_servers,
-        description = "Do a multi pull"
-    )
-    async def gacha_multi(self, ctx):
+    @gacha.command()
+    async def multi(self, ctx):
         
         result = []
         for x in range(10):
@@ -101,7 +94,7 @@ class gacha_cog(commands.Cog):
 
         self.GLOBAL_PITY_COUNT = 0
         self.GLOBAL_PITY_MAX = random.randint(50,100000)
-        channel = self.bot.get_channel(963293158626689124) #766134112028983326 <- main
+        channel = self.bot.get_channel(963293158626689124) #766134112028983326 <- chill-chat
         
         embed = discord.Embed(
             title = "Server Gacha Resetted",

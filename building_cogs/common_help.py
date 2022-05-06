@@ -17,35 +17,35 @@ class help_command(commands.Cog):
     async def overall(ctx):
         embed = discord.embed(
             title = "Help - Hanabusa Cafe",
-            value = "As long as you\'r following the #rules, you're free to do whatever"
+            description = "As long as you\'r following the #rules, you're free to do whatever"
         )
         embed.add_field(
-            title = "Go get your roles",
+            name = "Go get your roles",
             value = "If you haven\'t done that, then please do that so you unlock more chats",
             )
         embed.add_field(
-            title = "Create a ticket",
+            name = "Create a ticket",
             value = "If you wanna complains or something, create a ticket at #ticket-countertop, most information will be in there",
             )
         embed.add_field(
-            title = "Annoucements/Events",
+            name = "Annoucements/Events",
             value = "I rarely do annoucement unless it\'t related to server change or cyber-security stuff",
             )
         embed.add_field(
-            title = "Limited time stuff",
+            name = "Limited time stuff",
             value = "Sometime there will be a limited time stuff that we do in this server, so be sure to look out for that",
             )
         embed.add_field(
-            title = "Youtube/Twitch",
+            name = "Youtube/Twitch",
             value = "You make video or stream? Then you can post your content in the **Content Creator** catergory",
             )
         embed.add_field(
-            title = "Content Creator",
+            name = "Content Creator",
             value = "Hand-picked content creator will get to post in #cc-uploaded-video and/or #cc-going-live, otherwise bot will do the posting",
             inline = True
             )
         embed.add_field(
-            title = "Small Creator",
+            name = "Small Creator",
             value = "#youtube-video and #twitch-strem will be available for anyone to post",
             inline = True
             )
@@ -59,27 +59,27 @@ class help_command(commands.Cog):
             value = "Please attempt to keep the topic in there, if you're talking about one unrelated stuff please move to another channel"
         )
         embed.add_field(
-            title = "#chill-chat",
+            name = "#chill-chat",
             value = "Basically talks about whatever, as long as it\'s SFW",
             inline = True
             )
         embed.add_field(
-            title = "#bot-spam",
+            name = "#bot-spam",
             value = "Use bot\'s commands here",
             inline = True
             )
         embed.add_field(
-            title = "#horni-jail",
+            name = "#horni-jail",
             value = "Very NSFW, join if you\'re willing to",
             inline = True
             )
         embed.add_field(
-            title = "#shitpost-cave",
+            name = "#shitpost-cave",
             value = "Post your shitpost, memes or laughable stuff here",
             inline = True
             )
         embed.add_field(
-            title = "#art-channel",
+            name = "#art-channel",
             value = "Fan arts, drawing, etc. goes here, can be a slight ecchi but no hentai, that\'s for #horni-jail",
             inline = True
             )

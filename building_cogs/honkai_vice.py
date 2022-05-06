@@ -7,8 +7,9 @@ class honkai_vice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    #give or remove Impact-Member roles to the person
+    #make slash command group
     armada = discord.SlashCommandGroup("armada", "manage armada member")
+    
     
     @armada.command()
     async def add(self, ctx, user : discord.User = None):
@@ -19,6 +20,9 @@ class honkai_vice(commands.Cog):
         
         else:
             embed = discord.Embed(title="Welcome to the armada!", description= f"Added {user.mention}, remember to do Sim Battle when it reset")
+        
+        role = discord.utils.get(ctx.guild.roles, name="Member")
+        await user.add_roles(role)
         await ctx.respond(embed = embed)
     
     
@@ -31,6 +35,9 @@ class honkai_vice(commands.Cog):
         
         else:
             embed = discord.Embed(title="Awww you left us", description= f"{user.mention} you can always reapply")
+            
+        role = discord.utils.get(ctx.guild.roles, name="Member")
+        await user.remove_roles(role)
         await ctx.respond(embed = embed)
 
 def setup(bot):
