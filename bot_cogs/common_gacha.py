@@ -94,7 +94,7 @@ class gacha_cog(commands.Cog):
 
         self.GLOBAL_PITY_COUNT = 0
         self.GLOBAL_PITY_MAX = random.randint(50,100000)
-        channel = self.bot.get_channel(963293158626689124) #766134112028983326 <- chill-chat
+        channel = self.bot.get_channel(766134112028983326) #963293158626689124 <- chill-chat
         
         embed = discord.Embed(
             title = "Server Gacha Resetted",
