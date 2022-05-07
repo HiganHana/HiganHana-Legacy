@@ -3,6 +3,7 @@ from discord.ext import commands
 import discord
 from bot.conf import ArmandaMember, bot_bridge
 from bot.funcs import has_roles
+
 class mod_cog(commands.Cog):
     def __init__(self, bot):
         self.bot : discord.Bot = bot
@@ -49,6 +50,7 @@ class mod_cog(commands.Cog):
         description = f"by {ctx.author.mention}"
         fname = "Message"
         notify_msg = None
+        img=None
         while True:
             if notify_msg is not None:
                 await notify_msg.delete()
@@ -69,14 +71,22 @@ class mod_cog(commands.Cog):
                 fname = msg.content[6:]
             elif msg.content.startswith("http"):
                 lines.append(f"[link]({msg.content})")
+            elif msg.content.startswith("img="):
+                img = msg.content[4:]
             else:
                 lines.append(msg.content)
+            
             await msg.delete()
 
         embed = discord.Embed(title=title, description=description)
         if len(lines) > 0:
             embed.add_field(name=fname, value="\n".join(lines))
+        if img is not None:
+            embed.set_image(url=img)
+            
         await channel.send(embed=embed)
+
+    
 
 def setup(bot):
     bot.add_cog(mod_cog(bot))
