@@ -34,7 +34,7 @@ class new_member(commands.Cog):
             value = "The game is currently in a closed contracted beta test, please avoid leaking anything here cuz last thing I need is a lawsuit on my ass"
         )
         
-        #add role
+        # add role
         member = ctx.author
         role = discord.utils.get(ctx.guild.roles, name="Member")
         await member.add_roles(role)
