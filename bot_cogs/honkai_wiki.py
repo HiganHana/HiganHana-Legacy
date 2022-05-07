@@ -4,6 +4,8 @@ from pprint import pprint
 from random import choices
 from discord.ext import commands
 from discord.ext.commands import Bot
+from discord import Option
+
 from bot.conf import ArmandaMember
 from bot.conf import bot_bridge
 import discord
