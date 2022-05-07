@@ -3,6 +3,8 @@ from discord.ext import commands
 import discord
 from bot.conf import ArmandaMember, bot_bridge
 from bot.funcs import has_roles
+import asyncio
+
 class cog_debug(commands.Cog):
     def __init__(self, bot):
         self.bot : discord.Bot = bot
@@ -64,6 +66,58 @@ class cog_debug(commands.Cog):
         except Exception as e:
             return await self.build_and_send_embed(ctx, "Reload cog", f"Error: {e}")
 
+    @commands.command(name="wthreads")
+    async def wake_threads(self, ctx : discord.ApplicationContext):
+        channel = ctx.channel
+        archived_threads_iter = channel.archived_threads()
+
+        # walk through the archived threads iterator
+        thread : discord.Thread = await archived_threads_iter.get()
+
+        while True:
+            try:
+                await thread.unarchive()
+                thread = await archived_threads_iter.next()
+            except asyncio.QueueEmpty:
+                break
+                
+    
+    @commands.command(name="ithreads", help="Index all threads in the channel")
+    async def index(self, ctx : discord.ApplicationContext, channel:discord.TextChannel = None, add_des = False):
+        await ctx.message.delete()
+        if channel is None:
+            channel = ctx.channel
+
+        threads = channel.threads
+        if len(threads) == 0:
+            
+            return
+        lines = []
+        if not add_des:
+            for thread in threads:
+                thread : discord.Thread
+                await thread.unarchive()
+                lines.append(f"{thread.mention}")
+
+            embed = discord.Embed(title=f"{ctx.channel.name} Threads", description="\n".join(lines)) 
+            return await ctx.send(embed=embed)
+        
+        embed = discord.Embed(title=f"{ctx.channel.name} Threads")
+        for thread in threads:
+            
+            thread : discord.Thread
+            await thread.unarchive()
+            # get thread first message
+            message = thread.last_message
+
+            embed.add_field(name=thread.name, value=f"{thread.mention}\n{message.content}")
+
+        await ctx.send(embed=embed)
+
+    @commands.command(name="xbury")
+    async def xbury(self, ctx : discord.ApplicationContext, counter : int = 1):
+        await ctx.message.delete()
+        await ctx.channel.purge(limit=counter)
 
 def setup(bot):
     bot.add_cog(cog_debug(bot))
