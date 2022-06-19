@@ -1,5 +1,6 @@
-py-cord==2.0.0b7
+py-cord==2.0.0rc1
 flask
-zw-util-lib
+zw-util-lib==3.0.25
 genshin
 honkaidex
+PyNaCl
